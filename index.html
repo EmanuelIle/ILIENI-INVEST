@@ -22,9 +22,52 @@
         h1 {
             padding-top: 50px;
         }
+
+        input[type="text"] {
+            padding: 8px;
+            width: 100%;
+            max-width: 400px;
+            margin-top: 20px;
+        }
+
+        ul {
+            padding: 0;
+            margin-top: 20px;
+            list-style: none;
+        }
+
+        li {
+            list-style: none;
+            margin: 5px 0;
+            display: none; /* Ascunde elementele initial */
+        }
     </style>
 </head>
 <body>
     <h1>Bun venit la ILIENI-INVEST!</h1>
+    
+    <!-- Căutare produse -->
+    <input type="text" id="searchInput" onkeyup="searchProducts()" placeholder="Căutare produs...">
+    <ul id="productList">
+        <li>Telefon Samsung Galaxy</li>
+        <li>iPhone 12</li>
+        <li>Laptop HP</li>
+        <li>Tableta iPad</li>
+        <li>Smartwatch Garmin</li>
+    </ul>
+
+    <script>
+        function searchProducts() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const items = document.querySelectorAll('#productList li');
+            items.forEach(item => {
+                if (item.textContent.toLowerCase().includes(input)) {
+                    item.style.display = 'list-item';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+    </script>
 </body>
 </html>
