@@ -6,7 +6,7 @@
     <title>ILIENI-INVEST</title>
     <style>
         body {
-            margin: 0 !importnat;
+            margin: 0 !important;
             padding: 0;
             background-image: url('https://emanuelile.github.io/ILIENI-INVEST/fundal.webp');
             background-size: cover;
@@ -23,11 +23,36 @@
             padding-top: 50px;
         }
 
-        input[type="text"] {
+        input[type="text"], input[type="email"], input[type="password"] {
             padding: 8px;
             width: 100%;
             max-width: 400px;
             margin-top: 20px;
+        }
+
+        button {
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .auth-form {
+            padding: 30px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            display: inline-block;
+            margin-top: 50px;
+        }
+
+        .auth-form h3 {
+            margin-bottom: 20px;
         }
 
         ul {
@@ -45,11 +70,20 @@
 </head>
 <body>
     <h1>Bun venit la ILIENI-INVEST!</h1>
-    
+
     <!-- Căutare produse -->
     <input type="text" id="searchInput" onkeyup="searchProducts()" placeholder="Căutare produs...">
     <ul id="productList">
     </ul>
+
+    <!-- Formular de Autentificare / Înregistrare -->
+    <div id="authForm" class="auth-form">
+        <h3 id="authTitle">Autentificare</h3>
+        <input type="email" id="email" placeholder="Email" required><br><br>
+        <input type="password" id="password" placeholder="Parolă" required><br><br>
+        <button onclick="handleAuth()">Autentificare</button>
+        <button onclick="toggleAuth()">Crează un cont</button>
+    </div>
 
     <script>
         function searchProducts() {
@@ -64,22 +98,64 @@
             });
         }
     </script>
+
     <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyByP5ViWW4msYRqketugoVtPSUbu-Ykhts",
-    authDomain: "ilieni-invest.firebaseapp.com",
-    projectId: "ilieni-invest",
-    storageBucket: "ilieni-invest.firebasestorage.app",
-    messagingSenderId: "1083438978721",
-    appId: "1:1083438978721:web:fa4c2aaf6cd53286e302e0",
-    measurementId: "G-2XBHW5934G"
-  };
+        const firebaseConfig = {
+            apiKey: "AIzaSyByP5ViWW4msYRqketugoVtPSUbu-Ykhts",
+            authDomain: "ilieni-invest.firebaseapp.com",
+            projectId: "ilieni-invest",
+            storageBucket: "ilieni-invest.firebasestorage.app",
+            messagingSenderId: "1083438978721",
+            appId: "1:1083438978721:web:fa4c2aaf6cd53286e302e0",
+            measurementId: "G-2XBHW5934G"
+        };
 
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const analytics = getAnalytics(app);
+
+        // Funcția care gestionează autentificarea sau crearea contului
+        function handleAuth() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            if (document.getElementById('authTitle').textContent === "Autentificare") {
+                // Logica pentru autentificare
+                signInWithEmailAndPassword(auth, email, password)
+                    .then((userCredential) => {
+                        alert("Autentificare reușită!");
+                        console.log(userCredential.user);
+                    })
+                    .catch((error) => {
+                        alert("Eroare la autentificare: " + error.message);
+                    });
+            } else {
+                // Logica pentru crearea unui cont
+                createUserWithEmailAndPassword(auth, email, password)
+                    .then((userCredential) => {
+                        alert("Cont creat cu succes!");
+                        console.log(userCredential.user);
+                    })
+                    .catch((error) => {
+                        alert("Eroare la înregistrare: " + error.message);
+                    });
+            }
+        }
+
+        // Funcția care schimbă între autentificare și înregistrare
+        function toggleAuth() {
+            const title = document.getElementById('authTitle');
+            if (title.textContent === "Autentificare") {
+                title.textContent = "Înregistrare";
+            } else {
+                title.textContent = "Autentificare";
+            }
+        }
+    </script>
 </body>
 </html>
+
