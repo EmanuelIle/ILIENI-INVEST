@@ -170,18 +170,29 @@ let products = []; // listă locală cu produse
 
 function addProduct() {
     const name = document.getElementById("productName").value.trim();
-    if (name === "") return;
+    const description = document.getElementById("productDescription").value.trim();
+    const price = document.getElementById("productPrice").value.trim();
+    const imageInput = document.getElementById("productImage");
 
-    products.push(name);
+    if (!name) return;
 
     const li = document.createElement("li");
-    li.textContent = name;
+    li.innerHTML = 
+        <strong>${name}</strong><br>
+        ${description ? <em>${description}</em><br> : ""}
+        ${price ? <span>Preț: ${price} RON</span><br> : ""}
+        ${imageInput.files[0] ? <img src="${URL.createObjectURL(imageInput.files[0])}" alt="${name}" style="max-width: 150px; margin-top: 5px;"><br> : ""}
+        <hr>
+    ;
+
     document.getElementById("productList").appendChild(li);
 
+    // Resetare câmpuri
     document.getElementById("productName").value = "";
+    document.getElementById("productDescription").value = "";
+    document.getElementById("productPrice").value = "";
+    imageInput.value = "";
 }
-
     </script>
 </body>
 </html>
-
