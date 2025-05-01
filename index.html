@@ -130,14 +130,16 @@
         function handleAuth() {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
-document.getElementById("addProductForm").style.display = "block";
+
+    // Dacă autentificarea a reușit
     if (document.getElementById('authTitle').textContent === "Autentificare") {
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 const user = userCredential.user;
-                document.getElementById("authForm").style.display = "none";
+                document.getElementById("authForm").style.display = "none"; // Ascunde formularul de autentificare
                 document.getElementById("welcomeMessage").textContent = "Bine ai venit, " + user.email + "!";
-                document.getElementById("welcomeMessage").style.display = "block";
+                document.getElementById("welcomeMessage").style.display = "block"; // Afișează mesajul de bun venit
+                document.getElementById("addProductForm").style.display = "block"; // Afișează formularul de adăugare produs
             })
             .catch((error) => {
                 alert("Eroare la autentificare: " + error.message);
@@ -146,15 +148,17 @@ document.getElementById("addProductForm").style.display = "block";
         createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 const user = userCredential.user;
-                document.getElementById("authForm").style.display = "none";
+                document.getElementById("authForm").style.display = "none"; // Ascunde formularul de autentificare
                 document.getElementById("welcomeMessage").textContent = "Cont creat! Bine ai venit, " + user.email + "!";
-                document.getElementById("welcomeMessage").style.display = "block";
+                document.getElementById("welcomeMessage").style.display = "block"; // Afișează mesajul de bun venit
+                document.getElementById("addProductForm").style.display = "block"; // Afișează formularul de adăugare produs
             })
             .catch((error) => {
                 alert("Eroare la înregistrare: " + error.message);
             });
     }
 }
+
         // Funcția care schimbă între autentificare și înregistrare
         function toggleAuth() {
             const title = document.getElementById('authTitle');
