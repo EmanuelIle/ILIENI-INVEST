@@ -148,20 +148,6 @@
             });
     }
 }
-
-            else {
-                // Logica pentru crearea unui cont
-                createUserWithEmailAndPassword(auth, email, password)
-                    .then((userCredential) => {
-                        alert("Cont creat cu succes!");
-                        console.log(userCredential.user);
-                    })
-                    .catch((error) => {
-                        alert("Eroare la înregistrare: " + error.message);
-                    });
-            }
-        }
-
         // Funcția care schimbă între autentificare și înregistrare
         function toggleAuth() {
             const title = document.getElementById('authTitle');
