@@ -196,47 +196,17 @@ function addProduct() {
     document.getElementById("productPrice").value = "";
     imageInput.value = "";
 }
-        <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
+        function searchProducts() {
+            const input = document.getElementById("searchInput").value.toLowerCase();
+            const items = document.querySelectorAll("#productList li");
 
-    const firebaseConfig = { ... };
+            items.forEach((li) => {
+                li.style.display = li.textContent.toLowerCase().includes(input) ? "block" : "none";
+            });
+        }
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const analytics = getAnalytics(app);
+        window.searchProducts = searchProducts; // <- neapărat să expui funcția global
 
-    function handleAuth() { ... }
-
-    function toggleAuth() { ... }
-
-    let products = [];
-
-    function addProduct() {
-        // ... codul corectat pentru addProduct()
-    }
-
-    // 🔍 AICI vine funcția de căutare:
-    function searchProducts() {
-        const input = document.getElementById("searchInput").value.toLowerCase();
-        const items = document.querySelectorAll("#productList li");
-
-        items.forEach((li) => {
-            if (li.textContent.toLowerCase().includes(input)) {
-                li.style.display = "block";
-            } else {
-                li.style.display = "none";
-            }
-        });
-    }
-
-    // Expune funcția la global
-    window.handleAuth = handleAuth;
-    window.toggleAuth = toggleAuth;
-    window.searchProducts = searchProducts; // <- adaugă și asta!
-</script>
-    
     </script>
 </body>
 </html>
