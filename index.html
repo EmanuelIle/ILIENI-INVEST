@@ -77,32 +77,34 @@
     <ul id="productList">
     </ul>
 
-    <!-- Formular de Autentificare / Înregistrare -->
-    <div id="authForm" class="auth-form">
-        <h3 id="authTitle">Autentificare</h3>
-        <input type="email" id="email" placeholder="Email" required><br><br>
-        <input type="password" id="password" placeholder="Parolă" required><br><br>
-        <button onclick="handleAuth()">Autentificare</button>
-        <button onclick="toggleAuth()">Crează un cont</button>
-    </div>
+   <!-- Formular de Autentificare / Înregistrare -->
+<div id="authForm" class="auth-form">
+    <h3 id="authTitle">Autentificare</h3>
+    <input type="email" id="email" placeholder="Email" required><br><br>
+    <input type="password" id="password" placeholder="Parolă" required><br><br>
+    <button onclick="handleAuth()">Autentificare</button>
+    <button onclick="toggleAuth()">Crează un cont</button>
+</div>
+
+<!-- Mesaj de bun venit (afișat după autentificare) -->
 <div id="welcomeMessage" style="display: none; font-size: 1.2em; margin-top: 20px;"></div>
-    <div id="addProductForm" style="display: none; margin-top: 30px;">
+
+<!-- Formular pentru Adăugarea unui produs (afișat după autentificare) -->
+<div id="addProductForm" style="display: none; margin-top: 30px;">
     <h3>Adaugă produs</h3>
     <input type="text" id="productName" placeholder="Nume produs"><br><br>
+    <input type="text" id="productDescription" placeholder="Descriere produs"><br><br>
+    <input type="number" id="productPrice" placeholder="Preț produs" step="0.01"><br><br>
+    <input type="file" id="productImage" accept="image/*"><br><br>
     <button onclick="addProduct()">Adaugă</button>
 </div>
-    <script>
-        function searchProducts() {
-            const input = document.getElementById('searchInput').value.toLowerCase();
-            const items = document.querySelectorAll('#productList li');
-            items.forEach(item => {
-                if (item.textContent.toLowerCase().includes(input)) {
-                    item.style.display = 'list-item';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-        }
+
+<!-- Listă Produse -->
+<ul id="productList"></ul>
+
+<!-- Căutare Produse -->
+<input type="text" id="searchInput" onkeyup="searchProducts()" placeholder="Căutare produs...">
+
     </script>
 
     <script type="module">
