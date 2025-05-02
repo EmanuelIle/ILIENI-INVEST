@@ -2,6 +2,8 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyByP5ViWW4msYRqketugoVtPSUbu-Ykhts",
@@ -16,6 +18,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const analytics = getAnalytics(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
 
 // Funcțiile pentru autentificare și adăugare produs
 function handleAuth() {
@@ -61,7 +65,7 @@ function toggleAuth() {
 window.handleAuth = handleAuth;
 window.toggleAuth = toggleAuth;
 
-function addProduct() {
+async function addProduct() {
     const name = document.getElementById("productName").value.trim();
     const description = document.getElementById("productDescription").value.trim();
     const price = document.getElementById("productPrice").value.trim();
@@ -72,33 +76,53 @@ function addProduct() {
         return;
     }
 
-    const li = document.createElement("li");
-    li.style.display = "block";
-    li.innerHTML = `
-        <strong>${name}</strong><br>
-        ${description ? `<em>${description}</em><br>` : ""}
-        ${price ? `<span>Preț: ${price} RON</span><br>` : ""}
-        ${imageInput.files[0] ? `<img src="${URL.createObjectURL(imageInput.files[0])}" alt="${name}" style="max-width: 150px; margin-top: 5px;"><br>` : ""}
-        <hr>
-    `;
+    let imageUrl = "";
+    const imageFile = imageInput.files[0];
 
-    document.getElementById("productList").appendChild(li);
+    if (imageFile) {
+        try {
+            const imageRef = ref(storage, `product_images/${Date.now()}_${imageFile.name}`);
+            await uploadBytes(imageRef, imageFile);
+            imageUrl = await getDownloadURL(imageRef);
+        } catch (error) {
+            console.error("Eroare la upload imagine:", error);
+            alert("Eroare la încărcarea imaginii.");
+            return;
+        }
+    }
 
-    document.getElementById("productName").value = "";
-    document.getElementById("productDescription").value = "";
-    document.getElementById("productPrice").value = "";
-    imageInput.value = "";
+    try {
+        await addDoc(collection(db, "products"), {
+            name,
+            description,
+            price,
+            imageUrl,
+            createdAt: new Date()
+        });
+
+        alert("Produs adăugat cu succes!");
+
+        // Afișare locală
+        const li = document.createElement("li");
+        li.style.display = "block";
+        li.innerHTML = `
+            <strong>${name}</strong><br>
+            ${description ? `<em>${description}</em><br>` : ""}
+            <span>Preț: ${price} RON</span><br>
+            ${imageUrl ? `<img src="${imageUrl}" alt="${name}" style="max-width: 150px; margin-top: 5px;"><br>` : ""}
+            <hr>
+        `;
+        document.getElementById("productList").appendChild(li);
+
+        // Resetare formular
+        document.getElementById("productName").value = "";
+        document.getElementById("productDescription").value = "";
+        document.getElementById("productPrice").value = "";
+        imageInput.value = "";
+
+    } catch (error) {
+        console.error("Eroare la salvare în Firestore:", error);
+        alert("Eroare la salvarea anunțului.");
+    }
 }
 
-window.addProduct = addProduct;
-
-function searchProducts() {
-    const input = document.getElementById("searchInput").value.toLowerCase();
-    const items = document.querySelectorAll("#productList li");
-
-    items.forEach((li) => {
-        li.style.display = li.textContent.toLowerCase().includes(input) ? "block" : "none";
-    });
-}
-
-window.searchProducts = searchProducts;
