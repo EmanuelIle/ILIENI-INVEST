@@ -125,4 +125,5 @@ async function addProduct() {
         alert("Eroare la salvarea anunțului.");
     }
 }
+window.addProduct = addProduct;
 
