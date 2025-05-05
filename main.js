@@ -126,4 +126,10 @@ async function addProduct() {
     }
 }
 window.addProduct = addProduct;
+document.addEventListener("DOMContentLoaded", () => {
+    const addBtn = document.getElementById("addProductButton");
+    if (addBtn) {
+        addBtn.addEventListener("click", addProduct);
+    }
+});
 
