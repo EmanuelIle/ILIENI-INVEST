@@ -5,16 +5,6 @@ import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase
 import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
 
-const firebaseConfig = {
-    apiKey: "AIzaSyByP5ViWW4msYRqketugoVtPSUbu-Ykhts",
-    authDomain: "ilieni-invest.firebaseapp.com",
-    projectId: "ilieni-invest",
-    storageBucket: "ilieni-invest.firebasestorage.app",
-    messagingSenderId: "1083438978721",
-    appId: "1:1083438978721:web:fa4c2aaf6cd53286e302e0",
-    measurementId: "G-2XBHW5934G"
-};
-
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const analytics = getAnalytics(app);
