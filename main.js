@@ -132,4 +132,34 @@ document.addEventListener("DOMContentLoaded", () => {
         addBtn.addEventListener("click", addProduct);
     }
 });
+import { query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+async function loadProducts() {
+    try {
+        const productList = document.getElementById("productList");
+        productList.innerHTML = ""; // Curățăm lista anterioară
+
+        const productsQuery = query(collection(db, "products"), orderBy("createdAt", "desc"));
+        const querySnapshot = await getDocs(productsQuery);
+
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            const li = document.createElement("li");
+            li.style.display = "block";
+            li.innerHTML = `
+                <strong>${data.name}</strong><br>
+                ${data.description ? `<em>${data.description}</em><br>` : ""}
+                <span>Preț: ${data.price} RON</span><br>
+                ${data.imageUrl ? `<img src="${data.imageUrl}" alt="${data.name}" style="max-width: 150px; margin-top: 5px;"><br>` : ""}
+                <hr>
+            `;
+            productList.appendChild(li);
+        });
+    } catch (error) {
+        console.error("Eroare la încărcarea produselor:", error);
+    }
+}
+window.addEventListener("load", () => {
+    loadProducts(); // Afișează produsele imediat la încărcare
+});
 
