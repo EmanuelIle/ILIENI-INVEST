@@ -116,7 +116,17 @@
   <input type="text" id="searchInput" onkeyup="searchProducts()" placeholder="Căutare produs...">
 
   <!-- Grid pentru produse -->
-  <div id="productGrid"></div>
+  <div id="productGrid">
+  <!-- Exemplu de card produs -->
+  <div class="product-card">
+    <img src="path_to_image.jpg" alt="Product Image">
+    <h3>Product Name</h3>
+    <p>Product Description</p>
+    <p class="price">50 RON</p>
+    <!-- Buton de ștergere -->
+    <button onclick="stergeProdus('productId')">Șterge</button>
+  </div>
+</div>
 
   <!-- Formular de Autentificare -->
   <div id="authForm" class="auth-form">
