@@ -157,23 +157,58 @@ function searchProducts() {
     });
 }
 
-// Funcția de încărcare a produselor din Firestore
+import { deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+// Funcția care șterge un produs
+async function deleteProduct(productId) {
+    try {
+        // Verificăm dacă produsul există înainte de a-l șterge
+        const productRef = doc(db, "products", productId);
+        const productSnapshot = await getDoc(productRef);
+
+        if (!productSnapshot.exists()) {
+            alert("Produsul nu mai există.");
+            return;
+        }
+
+        // Șterge documentul din Firestore
+        await deleteDoc(productRef);
+
+        // Îndepărtează cardul din UI
+        const productCard = document.getElementById(productId);
+        if (productCard) {
+            productCard.remove();
+        }
+
+        alert("Produsul a fost șters cu succes!");
+    } catch (error) {
+        console.error("Eroare la ștergerea produsului:", error);
+        alert("Eroare la ștergerea produsului.");
+    }
+}
+
+// Încarcă produsele și adaugă butonul de ștergere
 async function loadProducts() {
     try {
-        const productList = document.getElementById("productGrid");
+        const productList = document.getElementById("productList");
         productList.innerHTML = ""; // Curățăm lista anterioară
 
         const productsQuery = query(collection(db, "products"), orderBy("createdAt", "desc"));
         const querySnapshot = await getDocs(productsQuery);
 
+        const grid = document.getElementById("productGrid");
+        grid.innerHTML = ""; // Curăță grid-ul de produse
+
         querySnapshot.forEach((doc) => {
             const data = doc.data();
+            const productId = doc.id;
 
             const card = document.createElement('div');
             card.className = 'product-card';
+            card.id = productId; // Setează id-ul cardului pentru a-l putea șterge
 
             const img = document.createElement('img');
-            img.src = data.imageUrl || '';  // Adaugă URL-ul imaginii
+            img.src = data.imageUrl || 'default-image.jpg'; // Imaginea produsului
             img.alt = data.name;
 
             const title = document.createElement('h3');
@@ -186,15 +221,26 @@ async function loadProducts() {
             priceElement.className = 'price';
             priceElement.textContent = `Preț: ${data.price} RON`;
 
+            // Butonul de ștergere
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = "Șterge";
+            deleteButton.style.backgroundColor = '#e74c3c'; // Roșu pentru buton
+            deleteButton.style.marginTop = '10px';
+            deleteButton.addEventListener("click", () => deleteProduct(productId)); // Atașează funcția de ștergere
+
+            // Adăugăm elementele la card
             card.appendChild(img);
             card.appendChild(title);
             card.appendChild(desc);
             card.appendChild(priceElement);
+            card.appendChild(deleteButton);
 
-            productList.appendChild(card);
+            // Adăugăm cardul în grid
+            grid.appendChild(card);
         });
     } catch (error) {
         console.error("Eroare la încărcarea produselor:", error);
+        alert("Eroare la încărcarea produselor.");
     }
 }
 
