@@ -189,3 +189,5 @@ card.appendChild(priceElement);
 
 // Adaugă cardul în grid
 document.getElementById("productGrid").appendChild(card);
+   }
+}
