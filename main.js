@@ -153,7 +153,7 @@ import { query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/11.6
 
 async function loadProducts() {
     try {
-        const productList = document.getElementById("productGrid");
+        const productList = document.getElementById("productList");
         productList.innerHTML = ""; // Curățăm lista anterioară
 
         const productsQuery = query(collection(db, "products"), orderBy("createdAt", "desc"));
