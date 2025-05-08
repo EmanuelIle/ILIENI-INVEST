@@ -2,7 +2,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
-import { getFirestore, collection, addDoc, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { getFirestore, collection, addDoc, query, orderBy, getDocs, doc, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
 
 // Configurația Firebase
@@ -109,8 +109,7 @@ async function addProduct() {
         card.className = 'product-card';
 
         const img = document.createElement('img');
-        img.src = imageUrl;
-        img.alt = name;
+        img.src = imageUrl || 'default-image.jpg'; // Folosește imagine de fallback în caz că nu există imagine
 
         const title = document.createElement('h3');
         title.textContent = name;
@@ -157,8 +156,6 @@ function searchProducts() {
     });
 }
 
-import { deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
 // Funcția care șterge un produs
 async function deleteProduct(productId) {
     try {
@@ -190,14 +187,11 @@ async function deleteProduct(productId) {
 // Încarcă produsele și adaugă butonul de ștergere
 async function loadProducts() {
     try {
-        const productList = document.getElementById("productList");
-        productList.innerHTML = ""; // Curățăm lista anterioară
+        const grid = document.getElementById("productGrid");
+        grid.innerHTML = ""; // Curăță grid-ul de produse
 
         const productsQuery = query(collection(db, "products"), orderBy("createdAt", "desc"));
         const querySnapshot = await getDocs(productsQuery);
-
-        const grid = document.getElementById("productGrid");
-        grid.innerHTML = ""; // Curăță grid-ul de produse
 
         querySnapshot.forEach((doc) => {
             const data = doc.data();
@@ -244,7 +238,7 @@ async function loadProducts() {
     }
 }
 
-// Atasează funcțiile la evenimente
+// Atașează funcțiile la evenimente
 window.handleAuth = handleAuth;
 window.toggleAuth = toggleAuth;
 window.addProduct = addProduct;
@@ -253,4 +247,3 @@ document.getElementById("searchInput").addEventListener("keyup", searchProducts)
 
 // Încarcă produsele atunci când documentul este gata
 document.addEventListener("DOMContentLoaded", loadProducts);
-
