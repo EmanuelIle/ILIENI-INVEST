@@ -153,7 +153,7 @@ import { query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/11.6
 
 async function loadProducts() {
     try {
-        const productList = document.getElementById("productList");
+        const productList = document.getElementById("productGrid");
         productList.innerHTML = ""; // Curățăm lista anterioară
 
         const productsQuery = query(collection(db, "products"), orderBy("createdAt", "desc"));
@@ -165,27 +165,27 @@ grid.innerHTML = "";
 querySnapshot.forEach((doc) => {
     const data = doc.data();
 
-    const card = document.createElement("div");
-    card.className = "product-card";
+ const card = document.createElement('div');
+card.className = 'product-card';
 
-    const img = document.createElement("img");
-    img.src = data.imageUrl;
-    img.alt = data.name;
+const img = document.createElement('img');
+img.src = imageUrl;
+img.alt = name;
 
-    const title = document.createElement("h3");
-    title.textContent = data.name;
+const title = document.createElement('h3');
+title.textContent = name; // Folosește name în loc de product.name
 
-    const desc = document.createElement("p");
-    desc.textContent = data.description;
+const desc = document.createElement('p');
+desc.textContent = description; // Folosește description în loc de product.description
 
-    const price = document.createElement("div");
-    price.className = "price";
-    price.textContent = `Preț: ${data.price} RON`;
+const priceElement = document.createElement('div');
+priceElement.className = 'price';
+priceElement.textContent = `Preț: ${price} RON`; // Folosește price în loc de product.price
 
-    card.appendChild(img);
-    card.appendChild(title);
-    card.appendChild(desc);
-    card.appendChild(price);
+card.appendChild(img);
+card.appendChild(title);
+card.appendChild(desc);
+card.appendChild(priceElement);
 
-    grid.appendChild(card);
-});
+// Adaugă cardul în grid
+document.getElementById("productGrid").appendChild(card);
