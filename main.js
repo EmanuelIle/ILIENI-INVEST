@@ -102,17 +102,34 @@ async function addProduct() {
 
         alert("Produs adăugat cu succes!");
 
-        // Afișare locală
-        const li = document.createElement("li");
-        li.style.display = "block";
-        li.innerHTML = `
-            <strong>${name}</strong><br>
-            ${description ? `<em>${description}</em><br>` : ""}
-            <span>Preț: ${price} RON</span><br>
-            ${imageUrl ? `<img src="${imageUrl}" alt="${name}" style="max-width: 150px; margin-top: 5px;"><br>` : ""}
-            <hr>
-        `;
-        document.getElementById("productList").appendChild(li);
+        const card = document.createElement('div');
+card.className = 'product-card';
+
+const img = document.createElement('img');
+img.src = imageUrl;
+img.alt = name;
+title.textContent = name;
+desc.textContent = description;
+priceElement.textContent = `Preț: ${price} RON`;
+
+const title = document.createElement('h3');
+title.textContent = product.name;
+
+const desc = document.createElement('p');
+desc.textContent = product.description;
+
+const price = document.createElement('div');
+price.className = 'price';
+price.textContent = `Preț: ${product.price} RON`;
+
+card.appendChild(img);
+card.appendChild(title);
+card.appendChild(desc);
+card.appendChild(price);
+
+// Adaugă cardul în grid
+document.getElementById("productGrid").appendChild(card);
+
 
         // Resetare formular
         document.getElementById("productName").value = "";
@@ -142,23 +159,33 @@ async function loadProducts() {
         const productsQuery = query(collection(db, "products"), orderBy("createdAt", "desc"));
         const querySnapshot = await getDocs(productsQuery);
 
-        querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            const li = document.createElement("li");
-            li.style.display = "block";
-            li.innerHTML = `
-                <strong>${data.name}</strong><br>
-                ${data.description ? `<em>${data.description}</em><br>` : ""}
-                <span>Preț: ${data.price} RON</span><br>
-                ${data.imageUrl ? `<img src="${data.imageUrl}" alt="${data.name}" style="max-width: 150px; margin-top: 5px;"><br>` : ""}
-                <hr>
-            `;
-            productList.appendChild(li);
-        });
-    } catch (error) {
-        console.error("Eroare la încărcarea produselor:", error);
-    }
-}
-window.addEventListener("load", () => {
-    loadProducts(); // Afișează produsele imediat la încărcare
+        const grid = document.getElementById("productGrid");
+grid.innerHTML = "";
+
+querySnapshot.forEach((doc) => {
+    const data = doc.data();
+
+    const card = document.createElement("div");
+    card.className = "product-card";
+
+    const img = document.createElement("img");
+    img.src = data.imageUrl;
+    img.alt = data.name;
+
+    const title = document.createElement("h3");
+    title.textContent = data.name;
+
+    const desc = document.createElement("p");
+    desc.textContent = data.description;
+
+    const price = document.createElement("div");
+    price.className = "price";
+    price.textContent = `Preț: ${data.price} RON`;
+
+    card.appendChild(img);
+    card.appendChild(title);
+    card.appendChild(desc);
+    card.appendChild(price);
+
+    grid.appendChild(card);
 });
