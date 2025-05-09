@@ -29,6 +29,9 @@ function handleAuth() {
             });
     }
 }
+
+window.handleAuth = handleAuth;
+
 // main.js (gazduit pe GitHub Pages)
 import './firebaseConfig.js';
 import './products.js';
