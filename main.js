@@ -45,10 +45,15 @@ function handleAuth() {
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 const user = userCredential.user;
+                // Ascunde formularul de autentificare
                 document.getElementById("authForm").style.display = "none";
+                // Afișează mesajul de bun venit
                 document.getElementById("welcomeMessage").textContent = "Bine ai venit, " + user.email + "!";
                 document.getElementById("welcomeMessage").style.display = "block";
+                // Afișează formularul de adăugare produse
                 document.getElementById("addProductForm").style.display = "block";
+                // Afișează butonul de logout
+                document.getElementById("logoutButton").style.display = "block";
             })
             .catch((error) => {
                 alert("Eroare la autentificare: " + error.message);
@@ -57,10 +62,15 @@ function handleAuth() {
         createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 const user = userCredential.user;
+                // Ascunde formularul de autentificare
                 document.getElementById("authForm").style.display = "none";
+                // Afișează mesajul de bun venit
                 document.getElementById("welcomeMessage").textContent = "Cont creat! Bine ai venit, " + user.email + "!";
                 document.getElementById("welcomeMessage").style.display = "block";
+                // Afișează formularul de adăugare produse
                 document.getElementById("addProductForm").style.display = "block";
+                // Afișează butonul de logout
+                document.getElementById("logoutButton").style.display = "block";
             })
             .catch((error) => {
                 alert("Eroare la înregistrare: " + error.message);
@@ -68,6 +78,22 @@ function handleAuth() {
     }
 }
 
+// Funcția de Logout
+function logout() {
+    signOut(auth)
+        .then(() => {
+            // Ascunde secțiunile specifice utilizatorului
+            document.getElementById("authForm").style.display = "block";  // Afișează formularul de autentificare
+            document.getElementById("welcomeMessage").style.display = "none"; // Ascunde mesajul de bun venit
+            document.getElementById("addProductForm").style.display = "none"; // Ascunde formularul de adăugare produs
+            document.getElementById("logoutButton").style.display = "none";  // Ascunde butonul de logout
+        })
+        .catch((error) => {
+            alert("Eroare la deconectare: " + error.message);
+        });
+}
+
+window.logout = logout;  // Face funcția accesibilă în HTML
 function toggleAuth() {
     const title = document.getElementById('authTitle');
     title.textContent = title.textContent === "Autentificare" ? "Înregistrare" : "Autentificare";
