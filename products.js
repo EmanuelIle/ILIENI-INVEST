@@ -1,3 +1,4 @@
+import { auth, db, storage } from './firebaseConfig.js';
 // Funcția pentru adăugarea unui produs
 async function addProduct() {
     const name = document.getElementById("productName").value.trim();
