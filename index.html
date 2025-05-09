@@ -2,7 +2,7 @@
 <html lang="ro">
 <head>
   <meta charset="UTF-8" />
-  <title>Ilieni Invest</title>
+  <title>Ilieni Invest - Magazin Online</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="icon" href="favicon.webp" type="image/webp" />
   <style>
@@ -25,14 +25,13 @@
       padding: 20px;
       margin: 20px auto;
       border-radius: 10px;
-      max-width: 500px;
+      max-width: 1000px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     }
 
     input, textarea, button {
       display: block;
       width: 100%;
-      max-width: 100%;
       padding: 10px;
       margin: 10px 0;
       border-radius: 5px;
@@ -62,7 +61,7 @@
       display: none;
     }
 
-    #productList li {
+    #productList li, #cartItems li {
       background-color: rgba(255, 255, 255, 0.1);
       padding: 10px;
       margin: 10px 0;
@@ -70,7 +69,7 @@
       list-style: none;
     }
 
-    #productList img {
+    #productList img, #cartItems img {
       max-width: 150px;
       margin-top: 10px;
       border-radius: 5px;
@@ -86,15 +85,61 @@
       margin: 0 auto 40px auto;
     }
 
-    #cartItems li {
-      list-style: none;
-      margin-bottom: 10px;
+    nav {
+      margin: 20px;
+      text-align: center;
+    }
+
+    nav a {
+      color: white;
+      margin: 10px;
+      font-size: 18px;
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 5px;
+      background-color: rgba(0, 0, 0, 0.6);
+      transition: background-color 0.3s ease;
+    }
+
+    nav a:hover {
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    .category-section {
+      display: flex;
+      justify-content: space-around;
+      margin: 20px 0;
+    }
+
+    .category-section div {
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 15px;
+      width: 30%;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      text-align: center;
+    }
+
+    .category-section img {
+      width: 100%;
+      max-width: 100px;
+      margin-bottom: 15px;
+      border-radius: 8px;
     }
   </style>
 </head>
 <body>
 
-  <h1>Bun venit la ILIENI-INVEST</h1>
+  <h1>Bun venit la ILIENI-INVEST - Magazin Online</h1>
+
+  <!-- Navigare prin categorii -->
+  <nav>
+    <a href="#haine">Haine</a>
+    <a href="#accesorii">Accesorii</a>
+    <a href="#unelte">Unelte și Materiale</a>
+    <a href="#gadgeturi">Gadgeturi</a>
+    <a href="#comoditati">Comodități</a>
+  </nav>
 
   <!-- Autentificare / Înregistrare -->
   <form id="authForm">
@@ -108,19 +153,109 @@
   <!-- Mesaj de bun venit -->
   <h3 id="welcomeMessage" style="display:none;"></h3>
 
-  <!-- Formular adăugare produs -->
-  <form id="addProductForm" style="display:none;" onsubmit="event.preventDefault(); addProduct();">
-    <h2>Adaugă produs</h2>
-    <input type="text" id="productName" placeholder="Nume produs" required />
-    <textarea id="productDescription" placeholder="Descriere produs"></textarea>
-    <input type="number" id="productPrice" placeholder="Preț (RON)" required />
-    <input type="number" id="productQuantity" placeholder="Cantitate" required />
-    <input type="file" id="productImage" accept="image/*" />
-    <button type="submit">Adaugă produs</button>
-  </form>
-
   <!-- Buton Logout -->
   <button id="logoutButton" onclick="logout()">Deconectare</button>
+
+  <!-- Secțiuni produse -->
+  <section id="haine">
+    <h2>Haine</h2>
+    <div class="category-section">
+      <div>
+        <h3>Bărbați</h3>
+        <img src="path_to_image" alt="Bărbați">
+        <button onclick="addProduct('haine-barbati')">Adaugă produs</button>
+      </div>
+      <div>
+        <h3>Femei</h3>
+        <img src="path_to_image" alt="Femei">
+        <button onclick="addProduct('haine-femei')">Adaugă produs</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="accesorii">
+    <h2>Accesorii</h2>
+    <div class="category-section">
+      <div>
+        <h3>Bărbați</h3>
+        <img src="path_to_image" alt="Accesorii Bărbați">
+        <button onclick="addProduct('accesorii-barbati')">Adaugă produs</button>
+      </div>
+      <div>
+        <h3>Femei</h3>
+        <img src="path_to_image" alt="Accesorii Femei">
+        <button onclick="addProduct('accesorii-femei')">Adaugă produs</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="unelte">
+    <h2>Unelte și Materiale</h2>
+    <div class="category-section">
+      <div>
+        <h3>Unelte</h3>
+        <img src="path_to_image" alt="Unelte">
+        <button onclick="addProduct('unelte')">Adaugă produs</button>
+      </div>
+      <div>
+        <h3>Materiale</h3>
+        <img src="path_to_image" alt="Materiale">
+        <button onclick="addProduct('materiale')">Adaugă produs</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="gadgeturi">
+    <h2>Gadgeturi</h2>
+    <div class="category-section">
+      <div>
+        <h3>Telefoane</h3>
+        <img src="path_to_image" alt="Telefoane">
+        <button onclick="addProduct('telefoane')">Adaugă produs</button>
+      </div>
+      <div>
+        <h3>Laptopuri</h3>
+        <img src="path_to_image" alt="Laptopuri">
+        <button onclick="addProduct('laptopuri')">Adaugă produs</button>
+      </div>
+      <div>
+        <h3>Tablete</h3>
+        <img src="path_to_image" alt="Tablete">
+        <button onclick="addProduct('tablete')">Adaugă produs</button>
+      </div>
+      <div>
+        <h3>Ceasuri inteligente</h3>
+        <img src="path_to_image" alt="Ceasuri inteligente">
+        <button onclick="addProduct('ceasuri-inteligente')">Adaugă produs</button>
+      </div>
+      <div>
+        <h3>Căști</h3>
+        <img src="path_to_image" alt="Căști">
+        <button onclick="addProduct('casti')">Adaugă produs</button>
+      </div>
+      <div>
+        <h3>Boxe</h3>
+        <img src="path_to_image" alt="Boxe">
+        <button onclick="addProduct('boxe')">Adaugă produs</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="comoditati">
+    <h2>Comodități</h2>
+    <div class="category-section">
+      <div>
+        <h3>Telescoape</h3>
+        <img src="path_to_image" alt="Telescoape">
+        <button onclick="addProduct('telescoape')">Adaugă produs</button>
+      </div>
+      <div>
+        <h3>Binocluri</h3>
+        <img src="path_to_image" alt="Binocluri">
+        <button onclick="addProduct('binocluri')">Adaugă produs</button>
+      </div>
+    </div>
+  </section>
 
   <!-- Listă produse -->
   <section>
@@ -142,3 +277,4 @@
   <script type="module" src="main.js"></script>
 </body>
 </html>
+
