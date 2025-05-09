@@ -24,19 +24,21 @@ let currentUser = null;
 
 onAuthStateChanged(auth, (user) => {
     if (user) {
-        currentUser = user;
+        // Utilizatorul este deja autentificat
         document.getElementById("authForm").style.display = "none";
         document.getElementById("welcomeMessage").textContent = "Bine ai venit, " + user.email + "!";
         document.getElementById("welcomeMessage").style.display = "block";
         document.getElementById("addProductForm").style.display = "block";
+        document.getElementById("logoutButton").style.display = "block";
     } else {
-        currentUser = null;
+        // Utilizatorul nu este autentificat
         document.getElementById("authForm").style.display = "block";
         document.getElementById("welcomeMessage").style.display = "none";
         document.getElementById("addProductForm").style.display = "none";
+        document.getElementById("logoutButton").style.display = "none";
     }
 });
-
+// Funcție de autentificare sau înregistrare
 function handleAuth() {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
@@ -56,7 +58,13 @@ function handleAuth() {
                 document.getElementById("logoutButton").style.display = "block";
             })
             .catch((error) => {
-                alert("Eroare la autentificare: " + error.message);
+                if (error.code === 'auth/user-not-found') {
+                    alert("Emailul nu există.");
+                } else if (error.code === 'auth/wrong-password') {
+                    alert("Parola este incorectă.");
+                } else {
+                    alert("Eroare la autentificare: " + error.message);
+                }
             });
     } else {
         createUserWithEmailAndPassword(auth, email, password)
@@ -73,26 +81,34 @@ function handleAuth() {
                 document.getElementById("logoutButton").style.display = "block";
             })
             .catch((error) => {
-                alert("Eroare la înregistrare: " + error.message);
+                if (error.code === 'auth/email-already-in-use') {
+                    alert("Acest email este deja folosit.");
+                } else {
+                    alert("Eroare la înregistrare: " + error.message);
+                }
             });
     }
 }
 
-// Funcția de Logout
+// Funcția de logout
 function logout() {
     signOut(auth)
         .then(() => {
-            // Ascunde secțiunile specifice utilizatorului
-            document.getElementById("authForm").style.display = "block";  // Afișează formularul de autentificare
-            document.getElementById("welcomeMessage").style.display = "none"; // Ascunde mesajul de bun venit
-            document.getElementById("addProductForm").style.display = "none"; // Ascunde formularul de adăugare produs
-            document.getElementById("logoutButton").style.display = "none";  // Ascunde butonul de logout
+            // Ascunde formularul de adăugare produse
+            document.getElementById("addProductForm").style.display = "none";
+            // Ascunde mesajul de bun venit
+            document.getElementById("welcomeMessage").style.display = "none";
+            // Afișează formularul de autentificare
+            document.getElementById("authForm").style.display = "block";
+            // Ascunde butonul de logout
+            document.getElementById("logoutButton").style.display = "none";
         })
         .catch((error) => {
             alert("Eroare la deconectare: " + error.message);
         });
 }
 
+document.getElementById("logoutButton").addEventListener("click", logout);
 window.logout = logout;  // Face funcția accesibilă în HTML
 function toggleAuth() {
     const title = document.getElementById('authTitle');
