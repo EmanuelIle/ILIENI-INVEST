@@ -218,3 +218,7 @@ function openEditForm(productId, productData) {
         }
     };
 }
+
+window.addProduct = addProduct;
+window.searchProducts = searchProducts;
+window.loadProducts = loadProducts;
