@@ -6,7 +6,7 @@
     <title>ILIENI-INVEST</title>
     <link rel="icon" href="favicon.webp" type="image/webp">
     <style>
-       body {
+        body {
             margin: 0 !important;
             padding: 0;
             background-image: url('https://emanuelile.github.io/ILIENI-INVEST/fundal.webp');
@@ -57,15 +57,15 @@
 
         .auth-form {
             padding: 30px;
-            background-color: rgba(0, 0, 0, 0.7); /* Transparent background */
+            background-color: rgba(0, 0, 0, 0.7);
             border-radius: 15px;
             position: absolute;
             top: 20px;
             right: 20px;
             width: 320px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5); /* Adăugăm o umbră elegantă */
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
             z-index: 10;
-            animation: fadeIn 0.5s ease-in-out; /* Efect de fade-in */
+            animation: fadeIn 0.5s ease-in-out;
         }
 
         @keyframes fadeIn {
@@ -95,7 +95,6 @@
             margin: 5px 0;
         }
 
-        /* Adăugăm un efect pentru când utilizatorul este autentificat */
         #addProductForm {
             display: none;
             margin-top: 30px;
@@ -106,6 +105,11 @@
             font-size: 1.2em;
             margin-top: 20px;
         }
+
+        .no-products {
+            font-size: 1.2em;
+            color: #f44336;
+        }
     </style>
 </head>
 <body>
@@ -113,53 +117,89 @@
 
     <!-- Căutare produse -->
     <input type="text" id="searchInput" onkeyup="searchProducts()" placeholder="Căutare produs...">
-    <ul id="productList">
-    </ul>
+    <ul id="productList"></ul>
+    <p id="noProducts" class="no-products" style="display:none;">Nu au fost găsite produse.</p>
 
-   <!-- Formular de Autentificare / Înregistrare -->
-   <div id="authForm" class="auth-form">
-       <h3 id="authTitle">Autentificare</h3>
-       <input type="email" id="email" placeholder="Email" required><br><br>
-       <input type="password" id="password" placeholder="Parolă" required><br><br>
-       <button onclick="handleAuth()">Autentificare</button>
-       <button onclick="toggleAuth()">Crează un cont</button>
-   </div>
+    <!-- Formular de Autentificare / Înregistrare -->
+    <div id="authForm" class="auth-form">
+        <h3 id="authTitle">Autentificare</h3>
+        <input type="email" id="email" placeholder="Email" required><br><br>
+        <input type="password" id="password" placeholder="Parolă" required><br><br>
+        <button onclick="handleAuth()">Autentificare</button>
+        <button onclick="toggleAuth()">Crează un cont</button>
+    </div>
 
-<!-- Mesaj de bun venit (afișat după autentificare) -->
-<div id="welcomeMessage"></div>
+    <!-- Mesaj de bun venit -->
+    <div id="welcomeMessage"></div>
 
-<!-- Formular pentru Adăugarea unui produs (afișat după autentificare) -->
-<div id="addProductForm">
-    <h3>Adaugă produs</h3>
-    <input type="text" id="productName" placeholder="Nume produs"><br><br>
-    <input type="text" id="productDescription" placeholder="Descriere produs"><br><br>
-    <input type="number" id="productPrice" placeholder="Preț produs" step="0.01"><br><br>
-    <input type="number" id="productQuantity" placeholder="Cantitate produs"><br><br>
-    <input type="file" id="productImage" accept="image/*"><br><br>
-    <button onclick="addProduct()">Adaugă</button>
-</div>
+    <!-- Formular pentru Adăugarea unui produs -->
+    <div id="addProductForm">
+        <h3>Adaugă produs</h3>
+        <input type="text" id="productName" placeholder="Nume produs"><br><br>
+        <input type="text" id="productDescription" placeholder="Descriere produs"><br><br>
+        <input type="number" id="productPrice" placeholder="Preț produs" step="0.01"><br><br>
+        <input type="number" id="productQuantity" placeholder="Cantitate produs"><br><br>
+        <input type="file" id="productImage" accept="image/*"><br><br>
+        <button onclick="addProduct()">Adaugă</button>
+    </div>
 
-<!-- Listă Produse -->
+    <script type="module" src="https://emanuelile.github.io/ILIENI-INVEST/main.js"></script>
 
-<script type="module" src="https://emanuelile.github.io/ILIENI-INVEST/main.js"></script>
+    <script>
+        // Funcție de căutare produse
+        function searchProducts() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const productList = document.getElementById('productList');
+            const products = productList.getElementsByTagName('li');
+            let found = false;
 
-<script>
-  // Funcție de căutare produse
-  function searchProducts() {
-    const searchInput = document.getElementById('searchInput').value.toLowerCase();
-    const productList = document.getElementById('productList');
-    const products = productList.getElementsByTagName('li');
+            for (let i = 0; i < products.length; i++) {
+                const productName = products[i].getElementsByTagName('strong')[0].textContent.toLowerCase();
+                if (productName.includes(searchInput)) {
+                    products[i].style.display = 'block';
+                    found = true;
+                } else {
+                    products[i].style.display = 'none';
+                }
+            }
 
-    for (let i = 0; i < products.length; i++) {
-      const productName = products[i].getElementsByTagName('strong')[0].textContent.toLowerCase();
-      if (productName.includes(searchInput)) {
-        products[i].style.display = 'block';
-      } else {
-        products[i].style.display = 'none';
-      }
-    }
-  }
-</script>
+            // Afișează mesaj dacă nu au fost găsite produse
+            const noProductsMessage = document.getElementById('noProducts');
+            if (!found) {
+                noProductsMessage.style.display = 'block';
+            } else {
+                noProductsMessage.style.display = 'none';
+            }
+        }
 
+        // Funcție de încărcare produse (apelați-o atunci când produsele sunt încărcate)
+        async function loadProducts() {
+            const productList = document.getElementById("productList");
+            productList.innerHTML = ""; // Curăță lista existentă
+            const querySnapshot = await getDocs(collection(db, "products"));
+
+            if (querySnapshot.empty) {
+                document.getElementById('noProducts').style.display = 'block';
+            } else {
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const li = document.createElement("li");
+                    li.style.display = "block";
+                    li.innerHTML = `
+                        <strong>${data.name}</strong><br>
+                        ${data.description ? `<em>${data.description}</em><br>` : ""}
+                        <span>Preț: ${data.price} RON</span><br>
+                        <span>Bucăți disponibile: ${data.quantity}</span><br>
+                        ${data.imageUrl ? `<img src="${data.imageUrl}" alt="${data.name}" style="max-width: 150px; margin-top: 5px;"><br>` : ""}
+                    `;
+                    productList.appendChild(li);
+                });
+            }
+        }
+
+        window.addEventListener("load", () => {
+            loadProducts(); // Afișăm produsele la încărcarea paginii
+        });
+    </script>
 </body>
 </html>
