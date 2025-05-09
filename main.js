@@ -5,6 +5,9 @@ import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase
 import { getFirestore, collection, addDoc, query, orderBy, getDocs, doc, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
 
+// Importă funcțiile din products.js
+import { addProduct, searchProducts, deleteProduct, loadProducts, updateProduct } from './products.js';
+
 // Configurația Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyByP5ViWW4msYRqketugoVtPSUbu-Ykhts",
@@ -55,16 +58,10 @@ function handleAuth() {
     }
 }
 
-// main.js
-import { getProducts, addProduct, deleteProduct, updateProduct } from './products.js';
-import { getCurrentUser, onAuthStateChangedCustom } from './auth.js';
-
 // Atașează funcțiile la evenimente
-window.handleAuth = handleAuth;
-window.toggleAuth = toggleAuth;
-window.addProduct = addProduct;
 document.getElementById("addProductButton").addEventListener("click", addProduct);
 document.getElementById("searchInput").addEventListener("keyup", searchProducts);
 
 // Încarcă produsele atunci când documentul este gata
 document.addEventListener("DOMContentLoaded", loadProducts);
+
