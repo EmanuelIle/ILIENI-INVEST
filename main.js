@@ -32,33 +32,31 @@ let cart = [];
 
 // Funcție de autentificare
 function handleAuth() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
 
-  if (document.getElementById("authTitle").textContent === "Autentificare") {
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        displayWelcomeMessage(user);
-        toggleAuthForm(false);
-        loadProducts();
-      })
-      .catch((error) => {
-        alert("Eroare de autentificare: " + error.message);
-      });
-  } else {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        displayWelcomeMessage(user);
-        toggleAuthForm(false);
-        loadProducts();
-      })
-      .catch((error) => {
-        alert("Eroare la înregistrare: " + error.message);
-      });
-  }
+    // Verifică dacă utilizatorul vrea să se autentifice sau să se înregistreze
+    const isRegister = document.getElementById('authTitle').textContent === 'Înregistrare';
+
+    if (isRegister) {
+        firebase.auth().createUserWithEmailAndPassword(email, password).then((userCredential) => {
+            console.log("Contul a fost creat cu succes!", userCredential);
+        }).catch((error) => {
+            console.error("Eroare la înregistrare:", error);
+        });
+    } else {
+        firebase.auth().signInWithEmailAndPassword(email, password).then((userCredential) => {
+            console.log("Autentificare reușită!", userCredential);
+            document.getElementById('welcomeMessage').style.display = 'block';
+            document.getElementById('welcomeMessage').textContent = `Bine ai venit, ${userCredential.user.email}!`;
+            document.getElementById('authForm').style.display = 'none';
+            document.getElementById('logoutButton').style.display = 'block';
+        }).catch((error) => {
+            console.error("Eroare la autentificare:", error);
+        });
+    }
 }
+
 
 // Funcție pentru a afisa mesajul de bun venit
 function displayWelcomeMessage(user) {
@@ -69,24 +67,31 @@ function displayWelcomeMessage(user) {
 
 // Funcție pentru a schimba între autentificare și înregistrare
 function toggleAuth() {
-  const authTitle = document.getElementById("authTitle");
-  if (authTitle.textContent === "Autentificare") {
-    authTitle.textContent = "Înregistrare";
-  } else {
-    authTitle.textContent = "Autentificare";
-  }
+    const authForm = document.getElementById('authForm');
+    const authTitle = document.getElementById('authTitle');
+    const emailField = document.getElementById('email');
+    const passwordField = document.getElementById('password');
+
+    if (authTitle.textContent === 'Autentificare') {
+        authTitle.textContent = 'Înregistrare';
+        emailField.placeholder = 'Email pentru înregistrare';
+        passwordField.placeholder = 'Parolă pentru înregistrare';
+    } else {
+        authTitle.textContent = 'Autentificare';
+        emailField.placeholder = 'Email';
+        passwordField.placeholder = 'Parolă';
+    }
 }
 
 // Funcție pentru a deconecta utilizatorul
 function logout() {
-  signOut(auth).then(() => {
-    welcomeMessage.style.display = 'none';
-    logoutButton.style.display = 'none';
-    toggleAuthForm(true);
-    cartSection.style.display = 'none';
-  }).catch((error) => {
-    console.error("Eroare de deconectare:", error.message);
-  });
+    // Dacă folosești Firebase:
+    firebase.auth().signOut().then(() => {
+        console.log('Te-ai deconectat cu succes.');
+        window.location.reload();  // Poți actualiza pagina sau redirecționa utilizatorul.
+    }).catch((error) => {
+        console.error('Eroare la deconectare:', error);
+    });
 }
 
 // Funcție pentru a comuta vizibilitatea formularului de autentificare
@@ -97,23 +102,20 @@ function toggleAuthForm(show) {
 }
 
 // Funcție pentru a adăuga produse în Firebase
-async function addProduct() {
-  const productName = document.getElementById("productName").value;
-  const productDescription = document.getElementById("productDescription").value;
-  const productPrice = document.getElementById("productPrice").value;
-  const productQuantity = document.getElementById("productQuantity").value;
-  const productImage = document.getElementById("productImage").files[0];
+function addProduct() {
+    const productName = document.getElementById('productName').value;
+    const productDescription = document.getElementById('productDescription').value;
+    const productPrice = document.getElementById('productPrice').value;
+    const productQuantity = document.getElementById('productQuantity').value;
+    const productImage = document.getElementById('productImage').files[0];
 
-  // Adăugare produs în Firestore
-  const docRef = await addDoc(collection(db, "products"), {
-    name: productName,
-    description: productDescription,
-    price: parseFloat(productPrice),
-    quantity: parseInt(productQuantity),
-    imageUrl: productImage ? await uploadImage(productImage) : null
-  });
+    if (!productName || !productPrice || !productQuantity) {
+        alert("Te rog completează toate câmpurile necesare.");
+        return;
+    }
 
-  loadProducts();
+    // Salvează produsul într-un array sau în Firebase
+    console.log('Produs adăugat:', productName, productDescription, productPrice, productQuantity, productImage);
 }
 
 // Funcție pentru a încarca imaginea în Firebase Storage
