@@ -20,24 +20,20 @@ const analytics = getAnalytics(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-// Variabilă pentru utilizatorul curent
 let currentUser = null;
 
-// Verifică starea de autentificare a utilizatorului
 onAuthStateChanged(auth, (user) => {
     if (user) {
         currentUser = user;
-        // Actualizăm UI-ul pentru utilizatorul logat
         document.getElementById("authForm").style.display = "none";
         document.getElementById("welcomeMessage").textContent = "Bine ai venit, " + user.email + "!";
         document.getElementById("welcomeMessage").style.display = "block";
-        document.getElementById("addProductForm").style.display = "block"; // Permite adăugarea de produse
+        document.getElementById("addProductForm").style.display = "block";
     } else {
         currentUser = null;
-        // Actualizăm UI-ul pentru utilizatorul neautentificat
         document.getElementById("authForm").style.display = "block";
         document.getElementById("welcomeMessage").style.display = "none";
-        document.getElementById("addProductForm").style.display = "none"; // Ascundem adăugarea de produse
+        document.getElementById("addProductForm").style.display = "none";
     }
 });
 
@@ -49,7 +45,6 @@ function handleAuth() {
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 const user = userCredential.user;
-                // Actualizăm UI-ul pentru autentificare reușită
                 document.getElementById("authForm").style.display = "none";
                 document.getElementById("welcomeMessage").textContent = "Bine ai venit, " + user.email + "!";
                 document.getElementById("welcomeMessage").style.display = "block";
@@ -62,7 +57,6 @@ function handleAuth() {
         createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 const user = userCredential.user;
-                // Actualizăm UI-ul pentru înregistrare reușită
                 document.getElementById("authForm").style.display = "none";
                 document.getElementById("welcomeMessage").textContent = "Cont creat! Bine ai venit, " + user.email + "!";
                 document.getElementById("welcomeMessage").style.display = "block";
@@ -76,11 +70,7 @@ function handleAuth() {
 
 function toggleAuth() {
     const title = document.getElementById('authTitle');
-    if (title.textContent === "Autentificare") {
-        title.textContent = "Înregistrare";
-    } else {
-        title.textContent = "Autentificare";
-    }
+    title.textContent = title.textContent === "Autentificare" ? "Înregistrare" : "Autentificare";
 }
 
 window.handleAuth = handleAuth;
@@ -95,9 +85,10 @@ async function addProduct() {
     const name = document.getElementById("productName").value.trim();
     const description = document.getElementById("productDescription").value.trim();
     const price = document.getElementById("productPrice").value.trim();
+    const quantity = document.getElementById("productQuantity").value.trim();
     const imageInput = document.getElementById("productImage");
 
-    if (!name || !price) {
+    if (!name || !price || !quantity) {
         alert("Te rugăm să completezi toate câmpurile obligatorii!");
         return;
     }
@@ -122,20 +113,21 @@ async function addProduct() {
             name,
             description,
             price,
+            quantity,
             imageUrl,
             createdAt: new Date(),
-            userId: currentUser.uid // Salvăm ID-ul utilizatorului care a adăugat produsul
+            userId: currentUser.uid
         });
 
         alert("Produs adăugat cu succes!");
 
-        // Afișare locală
         const li = document.createElement("li");
         li.style.display = "block";
         li.innerHTML = `  
             <strong>${name}</strong><br>
             ${description ? `<em>${description}</em><br>` : ""}
             <span>Preț: ${price} RON</span><br>
+            <span>Bucăți disponibile: ${quantity}</span><br>
             ${imageUrl ? `<img src="${imageUrl}" alt="${name}" style="max-width: 150px; margin-top: 5px;"><br>` : ""}
             <button class="edit-btn" onclick="editProduct('${name}')">Modifică</button>
             <button class="delete-btn" onclick="deleteProduct('${name}')">Șterge</button>
@@ -147,11 +139,43 @@ async function addProduct() {
         document.getElementById("productName").value = "";
         document.getElementById("productDescription").value = "";
         document.getElementById("productPrice").value = "";
+        document.getElementById("productQuantity").value = "";
         imageInput.value = "";
 
     } catch (error) {
         console.error("Eroare la salvare în Firestore:", error);
-        alert("Eroare la salvarea anunțului.");
+        alert("Eroare la salvarea produsului.");
+    }
+}
+
+async function loadProducts() {
+    try {
+        const productList = document.getElementById("productList");
+        productList.innerHTML = "";
+
+        const productsQuery = query(collection(db, "products"), orderBy("createdAt", "desc"));
+        const querySnapshot = await getDocs(productsQuery);
+
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            const li = document.createElement("li");
+            li.style.display = "block";
+            li.innerHTML = `  
+                <strong>${data.name}</strong><br>
+                ${data.description ? `<em>${data.description}</em><br>` : ""}
+                <span>Preț: ${data.price} RON</span><br>
+                <span>Bucăți disponibile: ${data.quantity}</span><br>
+                ${data.imageUrl ? `<img src="${data.imageUrl}" alt="${data.name}" style="max-width: 150px; margin-top: 5px;"><br>` : ""}
+                ${data.userId === currentUser.uid ? `
+                    <button class="edit-btn" onclick="editProduct('${data.name}')">Modifică</button>
+                    <button class="delete-btn" onclick="deleteProduct('${data.name}')">Șterge</button>
+                ` : ""}
+                <hr>
+            `;
+            productList.appendChild(li);
+        });
+    } catch (error) {
+        console.error("Eroare la încărcarea produselor:", error);
     }
 }
 
@@ -177,44 +201,13 @@ async function editProduct(productId) {
         alert("Trebuie să te autentifici pentru a modifica un produs.");
         return;
     }
-
-    // Logica de editare a produsului, similară cu cea de adăugare, dar modificăm produsul existent
-    // De exemplu, putem prelua datele existente și le putem actualiza
+    // Logica de editare a produsului poate fi implementată aici
 }
 
 window.addProduct = addProduct;
 window.deleteProduct = deleteProduct;
 window.editProduct = editProduct;
 
-async function loadProducts() {
-    try {
-        const productList = document.getElementById("productList");
-        productList.innerHTML = ""; // Curățăm lista anterioară
-
-        const productsQuery = query(collection(db, "products"), orderBy("createdAt", "desc"));
-        const querySnapshot = await getDocs(productsQuery);
-
-        querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            const li = document.createElement("li");
-            li.style.display = "block";
-            li.innerHTML = `  
-                <strong>${data.name}</strong><br>
-                ${data.description ? `<em>${data.description}</em><br>` : ""}
-                <span>Preț: ${data.price} RON</span><br>
-                ${data.imageUrl ? `<img src="${data.imageUrl}" alt="${data.name}" style="max-width: 150px; margin-top: 5px;"><br>` : ""}
-                ${data.userId === currentUser.uid ? `
-                    <button class="edit-btn" onclick="editProduct('${data.name}')">Modifică</button>
-                    <button class="delete-btn" onclick="deleteProduct('${data.name}')">Șterge</button>
-                ` : ""}
-                <hr>
-            `;
-            productList.appendChild(li);
-        });
-    } catch (error) {
-        console.error("Eroare la încărcarea produselor:", error);
-    }
-}
-
 window.addEventListener("load", () => {
-    loadProducts(); // Afi
+    loadProducts(); // Afișăm produsele la încărcarea paginii
+});
