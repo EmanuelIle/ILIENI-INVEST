@@ -55,16 +55,6 @@ function handleAuth() {
     }
 }
 
-// Funcția pentru toggle între autentificare și înregistrare
-function toggleAuth() {
-    const title = document.getElementById('authTitle');
-    if (title.textContent === "Autentificare") {
-        title.textContent = "Înregistrare";
-    } else {
-        title.textContent = "Autentificare";
-    }
-}
-
 // main.js
 import { getProducts, addProduct, deleteProduct, updateProduct } from './products.js';
 import { getCurrentUser, onAuthStateChangedCustom } from './auth.js';
