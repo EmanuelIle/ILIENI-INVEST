@@ -1,4 +1,3 @@
-import { auth, db, storage } from './firebaseConfig.js';
 // Funcția pentru autentificare și înregistrare
 function handleAuth() {
     const email = document.getElementById('email').value;
@@ -30,8 +29,14 @@ function handleAuth() {
             });
     }
 }
+// main.js (gazduit pe GitHub Pages)
+import './firebaseConfig.js';
+import './products.js';
+import './auth.js';
 
-// Atașează funcțiile la evenimente
+// Pornim aplicația (ex: încărcăm produsele)
+loadProducts();
+
 document.getElementById("addProductButton").addEventListener("click", addProduct);
 document.getElementById("searchInput").addEventListener("keyup", searchProducts);
 
