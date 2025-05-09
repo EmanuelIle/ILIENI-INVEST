@@ -1,149 +1,106 @@
 <!DOCTYPE html>
 <html lang="ro">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ILIENI-INVEST</title>
-  <link rel="icon" href="favicon.webp" type="image/webp">
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background-image: url('https://emanuelile.github.io/ILIENI-INVEST/fundal.webp');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      min-height: 100vh;
-      font-family: Arial, sans-serif;
-      color: white;
-      text-align: center;
-      text-shadow: 1px 1px 3px black;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ILIENI-INVEST</title>
+    <link rel="icon" href="favicon.webp" type="image/webp">
+    <style>
+       body {
+    margin: 0 !important; /* Asigură-te că marginile sunt setate corect */
+    padding: 0;
+    background-image: url('https://emanuelile.github.io/ILIENI-INVEST/fundal.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+    color: white;
+    text-align: center;
+    text-shadow: 1px 1px 3px black;
+}
 
-    h1 {
-      padding-top: 50px;
-    }
+        h1 {
+            padding-top: 50px;
+        }
 
-    input[type="text"],
-    input[type="email"],
-    input[type="password"],
-    input[type="number"],
-    input[type="file"] {
-      padding: 8px;
-      width: 100%;
-      max-width: 400px;
-      margin-top: 10px;
-      border-radius: 4px;
-      border: none;
-    }
+        input[type="text"], input[type="email"], input[type="password"] {
+            padding: 8px;
+            width: 100%;
+            max-width: 400px;
+            margin-top: 20px;
+        }
 
-    button {
-      padding: 10px 20px;
-      margin-top: 10px;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
+        button {
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
 
-    button:hover {
-      background-color: #45a049;
-    }
+        button:hover {
+            background-color: #45a049;
+        }
 
-    .auth-form {
-      padding: 30px;
-      background-color: rgba(0, 0, 0, 0.5);
-      border-radius: 10px;
-      display: inline-block;
-      margin-top: 30px;
-    }
+        .auth-form {
+            padding: 30px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            display: inline-block;
+            margin-top: 50px;
+        }
 
-    #addProductForm {
-      background-color: rgba(0, 0, 0, 0.5);
-      border-radius: 10px;
-      display: inline-block;
-      padding: 30px;
-    }
+        .auth-form h3 {
+            margin-bottom: 20px;
+        }
 
-    #searchInput {
-      margin-top: 30px;
-    }
+        ul {
+            padding: 0;
+            margin-top: 20px;
+            list-style: none;
+        }
 
-    #productGrid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-      padding: 40px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .product-card {
-      background-color: rgba(255, 255, 255, 0.9);
-      color: black;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-      padding: 20px;
-      text-align: center;
-    }
-
-    .product-card img {
-      max-width: 100%;
-      border-radius: 8px;
-      height: 200px;
-      object-fit: cover;
-    }
-
-    .product-card h3 {
-      margin: 10px 0 5px;
-    }
-
-    .product-card p {
-      margin: 5px 0 10px;
-    }
-
-    .product-card .price {
-      font-weight: bold;
-      color: #2e7d32;
-    }
-  </style>
+      li {
+    list-style: none;
+    margin: 5px 0;
+}
+    </style>
 </head>
 <body>
-  <h1>Bun venit la ILIENI-INVEST!</h1>
+    <h1>Bun venit la ILIENI-INVEST!</h1>
 
-  <!-- Căutare produse -->
-  <input type="text" id="searchInput" onkeyup="searchProducts()" placeholder="Căutare produs...">
+    <!-- Căutare produse -->
+    <input type="text" id="searchInput" onkeyup="searchProducts()" placeholder="Căutare produs...">
+    <ul id="productList">
+    </ul>
 
-  <!-- Grid pentru produse -->
-  <div id="productGrid">
-</div>
-
-  <!-- Formular de Autentificare -->
-  <div id="authForm" class="auth-form">
+   <!-- Formular de Autentificare / Înregistrare -->
+<div id="authForm" class="auth-form">
     <h3 id="authTitle">Autentificare</h3>
-    <input type="email" id="email" placeholder="Email" required><br>
-    <input type="password" id="password" placeholder="Parolă" required><br>
+    <input type="email" id="email" placeholder="Email" required><br><br>
+    <input type="password" id="password" placeholder="Parolă" required><br><br>
     <button onclick="handleAuth()">Autentificare</button>
     <button onclick="toggleAuth()">Crează un cont</button>
-  </div>
+</div>
 
-  <!-- Mesaj de bun venit -->
-  <div id="welcomeMessage" style="display: none; font-size: 1.2em; margin-top: 20px;"></div>
+<!-- Mesaj de bun venit (afișat după autentificare) -->
+<div id="welcomeMessage" style="display: none; font-size: 1.2em; margin-top: 20px;"></div>
 
-  <!-- Formular adăugare produs -->
-  <div id="addProductForm" style="display: none; margin-top: 30px;">
+<!-- Formular pentru Adăugarea unui produs (afișat după autentificare) -->
+<div id="addProductForm" style="display: none; margin-top: 30px;">
     <h3>Adaugă produs</h3>
-    <input type="text" id="productName" placeholder="Nume produs"><br>
-    <input type="text" id="productDescription" placeholder="Descriere produs"><br>
-    <input type="number" id="productPrice" placeholder="Preț produs" step="0.01"><br>
-    <input type="file" id="productImage" accept="image/*"><br>
+    <input type="text" id="productName" placeholder="Nume produs"><br><br>
+    <input type="text" id="productDescription" placeholder="Descriere produs"><br><br>
+    <input type="number" id="productPrice" placeholder="Preț produs" step="0.01"><br><br>
+    <input type="file" id="productImage" accept="image/*"><br><br>
     <button id="addProductButton">Adaugă</button>
-  </div>
+</div>
 
-  <script type="module" src="https://emanuelile.github.io/ILIENI-INVEST/main.js"></script>
-  <script type="module" src="https://emanuelile.github.io/ILIENI-INVEST/auth.js"></script>
-  <script type="module" src="https://emanuelile.github.io/ILIENI-INVEST/firebaseConfig.js"></script>
-  <script type="module" src="https://emanuelile.github.io/ILIENI-INVEST/products.js"></script>
+<!-- Listă Produse -->
+
+<script type="module" src="https://emanuelile.github.io/ILIENI-INVEST/main.js"></script>
+    
 </body>
 </html>
