@@ -201,5 +201,14 @@
             loadProducts(); // Afișăm produsele la încărcarea paginii
         });
     </script>
+    <!-- Coș de cumpărături -->
+<div id="cartSection" style="position: fixed; bottom: 10px; right: 10px; width: 300px; background: rgba(0,0,0,0.8); padding: 15px; border-radius: 10px; color: white; z-index: 20; display: none;">
+    <h3>🛒 Coșul tău</h3>
+    <ul id="cartItems" style="text-align: left;"></ul>
+    <p id="cartTotal"><strong>Total:</strong> 0 RON</p>
+    <button onclick="finalizeOrder()">Trimite Comanda</button>
+    <button onclick="clearCart()">Golește Coșul</button>
+</div>
+
 </body>
 </html>
