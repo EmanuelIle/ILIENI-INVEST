@@ -221,16 +221,24 @@ async function loadProducts() {
             // Verifică dacă utilizatorul este autentificat
             const user = auth.currentUser;
             if (user) {
-                // Butonul de ștergere apare doar dacă utilizatorul este logat
-                const deleteButton = document.createElement('button');
-                deleteButton.textContent = "Șterge";
-                deleteButton.style.backgroundColor = '#e74c3c'; // Roșu pentru buton
-                deleteButton.style.marginTop = '10px';
-                deleteButton.addEventListener("click", () => deleteProduct(productId)); // Atașează funcția de ștergere
+    // Buton ștergere
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = "Șterge";
+    deleteButton.style.backgroundColor = '#e74c3c';
+    deleteButton.style.margin = '5px';
+    deleteButton.addEventListener("click", () => deleteProduct(productId));
 
-                card.appendChild(deleteButton); // Adaugă butonul de ștergere
-            }
+    // Buton modificare
+    const editButton = document.createElement('button');
+    editButton.textContent = "Modifică";
+    editButton.style.backgroundColor = '#3498db';
+    editButton.style.margin = '5px';
+    editButton.addEventListener("click", () => openEditForm(productId, data));
 
+    card.appendChild(editButton);
+    card.appendChild(deleteButton);
+}
+    
             // Adăugăm elementele la card
             card.appendChild(img);
             card.appendChild(title);
@@ -244,6 +252,40 @@ async function loadProducts() {
         console.error("Eroare la încărcarea produselor:", error);
         alert("Eroare la încărcarea produselor.");
     }
+}
+function openEditForm(productId, productData) {
+    // Completează formularul de adăugare cu datele produsului
+    document.getElementById("productName").value = productData.name;
+    document.getElementById("productDescription").value = productData.description;
+    document.getElementById("productPrice").value = productData.price;
+
+    // Arată formularul
+    document.getElementById("addProductForm").style.display = "block";
+
+    // Schimbă funcționalitatea butonului de adăugare în salvare modificare
+    const addButton = document.getElementById("addProductButton");
+    addButton.textContent = "Salvează modificări";
+
+    addButton.onclick = async () => {
+        const updatedProduct = {
+            name: document.getElementById("productName").value,
+            description: document.getElementById("productDescription").value,
+            price: parseFloat(document.getElementById("productPrice").value),
+        };
+
+        try {
+            await updateDoc(doc(db, "products", productId), updatedProduct);
+            alert("Produs modificat cu succes.");
+            document.getElementById("addProductForm").style.display = "none";
+            loadProducts();
+            // Resetăm butonul
+            addButton.textContent = "Adaugă";
+            addButton.onclick = addProduct; // restaurăm acțiunea originală
+        } catch (error) {
+            console.error("Eroare la modificare produs:", error);
+            alert("Eroare la modificare produs.");
+        }
+    };
 }
 
 // Atașează funcțiile la evenimente
