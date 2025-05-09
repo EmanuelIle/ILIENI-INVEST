@@ -1,3 +1,4 @@
+import { auth, db, storage } from './firebaseConfig.js';
 // Funcția pentru autentificare și înregistrare
 function handleAuth() {
     const email = document.getElementById('email').value;
