@@ -218,7 +218,10 @@ function openEditForm(productId, productData) {
         }
     };
 }
+// ... toate funcțiile tale existente
 
+// Expune funcțiile global pentru utilizare în HTML sau în alte module
 window.addProduct = addProduct;
 window.searchProducts = searchProducts;
 window.loadProducts = loadProducts;
+window.stergeProdus = deleteProduct;
