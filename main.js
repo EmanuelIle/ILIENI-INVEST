@@ -1,8 +1,7 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
-import { getFirestore, collection, addDoc, query, orderBy, getDocs, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
+// Importarea modulului Firebase
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { getFirestore, collection, addDoc, getDocs, query, where, updateDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyByP5ViWW4msYRqketugoVtPSUbu-Ykhts",
@@ -16,295 +15,187 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const analytics = getAnalytics(app);
 const db = getFirestore(app);
-const storage = getStorage(app);
 
-let currentUser = null;
-
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        // Utilizatorul este deja autentificat
-        document.getElementById("authForm").style.display = "none";
-        document.getElementById("welcomeMessage").textContent = "Bine ai venit, " + user.email + "!";
-        document.getElementById("welcomeMessage").style.display = "block";
-        document.getElementById("addProductForm").style.display = "block";
-        document.getElementById("logoutButton").style.display = "block";
-    } else {
-        // Utilizatorul nu este autentificat
-        document.getElementById("authForm").style.display = "block";
-        document.getElementById("welcomeMessage").style.display = "none";
-        document.getElementById("addProductForm").style.display = "none";
-        document.getElementById("logoutButton").style.display = "none";
-    }
-});
-// Funcție de autentificare sau înregistrare
-function handleAuth() {
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-
-    if (document.getElementById('authTitle').textContent === "Autentificare") {
-        signInWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                const user = userCredential.user;
-                // Ascunde formularul de autentificare
-                document.getElementById("authForm").style.display = "none";
-                // Afișează mesajul de bun venit
-                document.getElementById("welcomeMessage").textContent = "Bine ai venit, " + user.email + "!";
-                document.getElementById("welcomeMessage").style.display = "block";
-                // Afișează formularul de adăugare produse
-                document.getElementById("addProductForm").style.display = "block";
-                // Afișează butonul de logout
-                document.getElementById("logoutButton").style.display = "block";
-            })
-            .catch((error) => {
-                if (error.code === 'auth/user-not-found') {
-                    alert("Emailul nu există.");
-                } else if (error.code === 'auth/wrong-password') {
-                    alert("Parola este incorectă.");
-                } else {
-                    alert("Eroare la autentificare: " + error.message);
-                }
-            });
-    } else {
-        createUserWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                const user = userCredential.user;
-                // Ascunde formularul de autentificare
-                document.getElementById("authForm").style.display = "none";
-                // Afișează mesajul de bun venit
-                document.getElementById("welcomeMessage").textContent = "Cont creat! Bine ai venit, " + user.email + "!";
-                document.getElementById("welcomeMessage").style.display = "block";
-                // Afișează formularul de adăugare produse
-                document.getElementById("addProductForm").style.display = "block";
-                // Afișează butonul de logout
-                document.getElementById("logoutButton").style.display = "block";
-            })
-            .catch((error) => {
-                if (error.code === 'auth/email-already-in-use') {
-                    alert("Acest email este deja folosit.");
-                } else {
-                    alert("Eroare la înregistrare: " + error.message);
-                }
-            });
-    }
-}
-
-// Funcția de logout
-function logout() {
-    signOut(auth)
-        .then(() => {
-            // Ascunde formularul de adăugare produse
-            document.getElementById("addProductForm").style.display = "none";
-            // Ascunde mesajul de bun venit
-            document.getElementById("welcomeMessage").style.display = "none";
-            // Afișează formularul de autentificare
-            document.getElementById("authForm").style.display = "block";
-            // Ascunde butonul de logout
-            document.getElementById("logoutButton").style.display = "none";
-        })
-        .catch((error) => {
-            alert("Eroare la deconectare: " + error.message);
-        });
-}
-
-document.getElementById("logoutButton").addEventListener("click", logout);
-window.logout = logout;  // Face funcția accesibilă în HTML
-function toggleAuth() {
-    const title = document.getElementById('authTitle');
-    title.textContent = title.textContent === "Autentificare" ? "Înregistrare" : "Autentificare";
-}
-
-window.handleAuth = handleAuth;
-window.toggleAuth = toggleAuth;
-
-async function addProduct() {
-    if (!currentUser) {
-        alert("Trebuie să te autentifici pentru a adăuga un produs.");
-        return;
-    }
-
-    const name = document.getElementById("productName").value.trim();
-    const description = document.getElementById("productDescription").value.trim();
-    const price = document.getElementById("productPrice").value.trim();
-    const quantity = document.getElementById("productQuantity").value.trim();
-    const imageInput = document.getElementById("productImage");
-
-    if (!name || !price || !quantity) {
-        alert("Te rugăm să completezi toate câmpurile obligatorii!");
-        return;
-    }
-
-    let imageUrl = "";
-    const imageFile = imageInput.files[0];
-
-    if (imageFile) {
-        try {
-            const imageRef = ref(storage, `product_images/${Date.now()}_${imageFile.name}`);
-            await uploadBytes(imageRef, imageFile);
-            imageUrl = await getDownloadURL(imageRef);
-        } catch (error) {
-            console.error("Eroare la upload imagine:", error);
-            alert("Eroare la încărcarea imaginii.");
-            return;
-        }
-    }
-
-    try {
-        await addDoc(collection(db, "products"), {
-            name,
-            description,
-            price,
-            quantity,
-            imageUrl,
-            createdAt: new Date(),
-            userId: currentUser.uid
-        });
-
-        alert("Produs adăugat cu succes!");
-        loadProducts();
-
-        document.getElementById("productName").value = "";
-        document.getElementById("productDescription").value = "";
-        document.getElementById("productPrice").value = "";
-        document.getElementById("productQuantity").value = "";
-        imageInput.value = "";
-
-    } catch (error) {
-        console.error("Eroare la salvare în Firestore:", error);
-        alert("Eroare la salvarea produsului.");
-    }
-}
-
-async function loadProducts() {
-    try {
-        const productList = document.getElementById("productList");
-        productList.innerHTML = "";
-
-        const productsQuery = query(collection(db, "products"), orderBy("createdAt", "desc"));
-        const querySnapshot = await getDocs(productsQuery);
-
-        querySnapshot.forEach((docSnap) => {
-            const data = docSnap.data();
-            const productId = docSnap.id;
-            const li = document.createElement("li");
-            li.style.display = "block";
-            li.innerHTML = `  
-                <strong>${data.name}</strong><br>
-                ${data.description ? `<em>${data.description}</em><br>` : ""}
-                <span>Preț: ${data.price} RON</span><br>
-                <span>Bucăți disponibile: ${data.quantity}</span><br>
-                ${data.imageUrl ? `<img src="${data.imageUrl}" alt="${data.name}" style="max-width: 150px; margin-top: 5px;"><br>` : ""}
-                <button onclick='addToCart(${JSON.stringify({ name: data.name, price: data.price })})'>Adaugă în coș</button><br>
-                ${data.userId === currentUser?.uid ? `  
-                    <button class="edit-btn" onclick="editProduct('${productId}')">Modifică</button>
-                    <button class="delete-btn" onclick="deleteProduct('${productId}')">Șterge</button>
-                ` : ""}
-                <hr>
-            `;
-            productList.appendChild(li);
-        });
-    } catch (error) {
-        console.error("Eroare la încărcarea produselor:", error);
-    }
-}
-
-async function deleteProduct(productId) {
-    if (!currentUser) {
-        alert("Trebuie să te autentifici pentru a șterge un produs.");
-        return;
-    }
-
-    try {
-        const productRef = doc(db, "products", productId);
-        await deleteDoc(productRef);
-        alert("Produs șters cu succes!");
-        loadProducts();
-    } catch (error) {
-        console.error("Eroare la ștergere produs:", error);
-        alert("Eroare la ștergerea produsului.");
-    }
-}
-
-async function editProduct(productId) {
-    if (!currentUser) {
-        alert("Trebuie să te autentifici pentru a modifica un produs.");
-        return;
-    }
-    alert("Funcția de editare va fi implementată.");
-}
+// Elemente din HTML
+const authForm = document.getElementById("authForm");
+const addProductForm = document.getElementById("addProductForm");
+const productList = document.getElementById("productList");
+const logoutButton = document.getElementById("logoutButton");
+const welcomeMessage = document.getElementById("welcomeMessage");
+const noProductsMessage = document.getElementById("noProducts");
+const cartSection = document.getElementById("cartSection");
+const cartItemsList = document.getElementById("cartItems");
+const cartTotal = document.getElementById("cartTotal");
 
 let cart = [];
 
-function addToCart(product) {
-    cart.push(product);
-    updateCartUI();
+// Funcție de autentificare
+function handleAuth() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  if (document.getElementById("authTitle").textContent === "Autentificare") {
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        displayWelcomeMessage(user);
+        toggleAuthForm(false);
+        loadProducts();
+      })
+      .catch((error) => {
+        alert("Eroare de autentificare: " + error.message);
+      });
+  } else {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        displayWelcomeMessage(user);
+        toggleAuthForm(false);
+        loadProducts();
+      })
+      .catch((error) => {
+        alert("Eroare la înregistrare: " + error.message);
+      });
+  }
 }
 
-function updateCartUI() {
-    const cartSection = document.getElementById("cartSection");
-    const cartItems = document.getElementById("cartItems");
-    const cartTotal = document.getElementById("cartTotal");
+// Funcție pentru a afisa mesajul de bun venit
+function displayWelcomeMessage(user) {
+  welcomeMessage.style.display = 'block';
+  welcomeMessage.innerHTML = `Bun venit, ${user.email}`;
+  logoutButton.style.display = 'inline-block';
+}
 
-    if (cart.length === 0) {
-        cartSection.style.display = "none";
-        return;
-    }
+// Funcție pentru a schimba între autentificare și înregistrare
+function toggleAuth() {
+  const authTitle = document.getElementById("authTitle");
+  if (authTitle.textContent === "Autentificare") {
+    authTitle.textContent = "Înregistrare";
+  } else {
+    authTitle.textContent = "Autentificare";
+  }
+}
 
-    cartSection.style.display = "block";
-    cartItems.innerHTML = "";
+// Funcție pentru a deconecta utilizatorul
+function logout() {
+  signOut(auth).then(() => {
+    welcomeMessage.style.display = 'none';
+    logoutButton.style.display = 'none';
+    toggleAuthForm(true);
+    cartSection.style.display = 'none';
+  }).catch((error) => {
+    console.error("Eroare de deconectare:", error.message);
+  });
+}
 
-    let total = 0;
+// Funcție pentru a comuta vizibilitatea formularului de autentificare
+function toggleAuthForm(show) {
+  authForm.style.display = show ? 'block' : 'none';
+  addProductForm.style.display = show ? 'none' : 'block';
+  cartSection.style.display = show ? 'none' : 'block';
+}
 
-    cart.forEach((item, index) => {
-        total += parseFloat(item.price);
+// Funcție pentru a adăuga produse în Firebase
+async function addProduct() {
+  const productName = document.getElementById("productName").value;
+  const productDescription = document.getElementById("productDescription").value;
+  const productPrice = document.getElementById("productPrice").value;
+  const productQuantity = document.getElementById("productQuantity").value;
+  const productImage = document.getElementById("productImage").files[0];
 
-        const li = document.createElement("li");
-        li.innerHTML = `
-            ${item.name} - ${item.price} RON
-            <button style="margin-left:10px;" onclick="removeFromCart(${index})">❌</button>
-        `;
-        cartItems.appendChild(li);
+  // Adăugare produs în Firestore
+  const docRef = await addDoc(collection(db, "products"), {
+    name: productName,
+    description: productDescription,
+    price: parseFloat(productPrice),
+    quantity: parseInt(productQuantity),
+    imageUrl: productImage ? await uploadImage(productImage) : null
+  });
+
+  loadProducts();
+}
+
+// Funcție pentru a încarca imaginea în Firebase Storage
+async function uploadImage(imageFile) {
+  const storageRef = firebase.storage().ref();
+  const imageRef = storageRef.child('images/' + imageFile.name);
+  await imageRef.put(imageFile);
+  const downloadURL = await imageRef.getDownloadURL();
+  return downloadURL;
+}
+
+// Funcție pentru a încărca produsele din Firebase
+async function loadProducts() {
+  const productList = document.getElementById("productList");
+  productList.innerHTML = "";
+  const querySnapshot = await getDocs(collection(db, "products"));
+
+  if (querySnapshot.empty) {
+    noProductsMessage.style.display = 'block';
+  } else {
+    noProductsMessage.style.display = 'none';
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      const li = document.createElement("li");
+      li.innerHTML = `
+        <strong>${data.name}</strong><br>
+        ${data.description ? `<em>${data.description}</em><br>` : ""}
+        <span>Preț: ${data.price} RON</span><br>
+        <span>Bucăți disponibile: ${data.quantity}</span><br>
+        ${data.imageUrl ? `<img src="${data.imageUrl}" alt="${data.name}" style="max-width: 150px; margin-top: 5px;"><br>` : ""}
+        <button onclick="addToCart('${doc.id}', '${data.name}', ${data.price})">Adaugă în coș</button>
+      `;
+      productList.appendChild(li);
     });
-
-    cartTotal.textContent = `Total: ${total.toFixed(2)} RON`;
+  }
 }
 
-function removeFromCart(index) {
-    cart.splice(index, 1);
-    updateCartUI();
+// Funcție pentru a adăuga produse în coș
+function addToCart(productId, productName, productPrice) {
+  const productInCart = cart.find(item => item.productId === productId);
+  if (productInCart) {
+    productInCart.quantity++;
+  } else {
+    cart.push({ productId, productName, productPrice, quantity: 1 });
+  }
+  updateCartDisplay();
 }
 
-function clearCart() {
-    cart = [];
-    updateCartUI();
+// Funcție pentru a actualiza vizualizarea coșului
+function updateCartDisplay() {
+  cartItemsList.innerHTML = "";
+  let total = 0;
+  cart.forEach(item => {
+    total += item.productPrice * item.quantity;
+    const li = document.createElement("li");
+    li.innerHTML = `${item.productName} x${item.quantity} - ${item.productPrice * item.quantity} RON`;
+    cartItemsList.appendChild(li);
+  });
+
+  cartTotal.innerHTML = `<strong>Total:</strong> ${total} RON`;
+  cartSection.style.display = 'block';
 }
 
+// Funcție pentru a finaliza comanda
 function finalizeOrder() {
-    if (cart.length === 0) {
-        alert("Coșul este gol!");
-        return;
-    }
-
-    let message = "Comanda a fost trimisă cu următoarele produse:\n\n";
-    cart.forEach(item => {
-        message += `• ${item.name} - ${item.price} RON\n`;
-    });
-
-    message += `\nTotal: ${cart.reduce((sum, item) => sum + parseFloat(item.price), 0).toFixed(2)} RON`;
-    alert(message);
-
-    clearCart();
+  alert('Comanda ta a fost trimisă!');
+  cart = [];
+  updateCartDisplay();
 }
 
-window.addProduct = addProduct;
-window.deleteProduct = deleteProduct;
-window.editProduct = editProduct;
-window.addToCart = addToCart;
-window.removeFromCart = removeFromCart;
-window.clearCart = clearCart;
-window.finalizeOrder = finalizeOrder;
+// Funcție pentru a goli coșul
+function clearCart() {
+  cart = [];
+  updateCartDisplay();
+}
 
-window.addEventListener("load", () => {
+// Ascultător pentru modificările stării utilizatorului
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    displayWelcomeMessage(user);
     loadProducts();
+  } else {
+    toggleAuthForm(true);
+  }
 });
