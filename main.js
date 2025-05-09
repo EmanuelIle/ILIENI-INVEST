@@ -203,6 +203,68 @@ async function editProduct(productId) {
     }
     // Logica de editare a produsului poate fi implementată aici
 }
+let cart = [];
+
+function addToCart(product) {
+    cart.push(product);
+    updateCartUI();
+}
+
+function updateCartUI() {
+    const cartSection = document.getElementById("cartSection");
+    const cartItems = document.getElementById("cartItems");
+    const cartTotal = document.getElementById("cartTotal");
+
+    if (cart.length === 0) {
+        cartSection.style.display = "none";
+        return;
+    }
+
+    cartSection.style.display = "block";
+    cartItems.innerHTML = "";
+
+    let total = 0;
+
+    cart.forEach((item, index) => {
+        total += parseFloat(item.price);
+
+        const li = document.createElement("li");
+        li.innerHTML = `
+            ${item.name} - ${item.price} RON
+            <button style="margin-left:10px;" onclick="removeFromCart(${index})">❌</button>
+        `;
+        cartItems.appendChild(li);
+    });
+
+    cartTotal.textContent = `Total: ${total.toFixed(2)} RON`;
+}
+
+function removeFromCart(index) {
+    cart.splice(index, 1);
+    updateCartUI();
+}
+
+function clearCart() {
+    cart = [];
+    updateCartUI();
+}
+
+function finalizeOrder() {
+    if (cart.length === 0) {
+        alert("Coșul este gol!");
+        return;
+    }
+
+    let message = "Comanda a fost trimisă cu următoarele produse:\n\n";
+    cart.forEach(item => {
+        message += `• ${item.name} - ${item.price} RON\n`;
+    });
+
+    message += `\nTotal: ${cart.reduce((sum, item) => sum + parseFloat(item.price), 0).toFixed(2)} RON`;
+    alert(message);
+
+    clearCart();
+}
 
 window.addProduct = addProduct;
 window.deleteProduct = deleteProduct;
