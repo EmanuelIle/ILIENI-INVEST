@@ -166,7 +166,7 @@ async function loadProducts() {
                 <span>Preț: ${data.price} RON</span><br>
                 <span>Bucăți disponibile: ${data.quantity}</span><br>
                 ${data.imageUrl ? `<img src="${data.imageUrl}" alt="${data.name}" style="max-width: 150px; margin-top: 5px;"><br>` : ""}
-                ${data.userId === currentUser.uid ? `
+                ${data.userId === currentUser.uid ? `  
                     <button class="edit-btn" onclick="editProduct('${data.name}')">Modifică</button>
                     <button class="delete-btn" onclick="deleteProduct('${data.name}')">Șterge</button>
                 ` : ""}
