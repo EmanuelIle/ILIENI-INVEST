@@ -187,11 +187,14 @@ async function deleteProduct(productId) {
 // Încarcă produsele și adaugă butonul de ștergere
 async function loadProducts() {
     try {
-        const grid = document.getElementById("productGrid");
-        grid.innerHTML = ""; // Curăță grid-ul de produse
+        const productList = document.getElementById("productList");
+        productList.innerHTML = ""; // Curățăm lista anterioară
 
         const productsQuery = query(collection(db, "products"), orderBy("createdAt", "desc"));
         const querySnapshot = await getDocs(productsQuery);
+
+        const grid = document.getElementById("productGrid");
+        grid.innerHTML = ""; // Curăță grid-ul de produse
 
         querySnapshot.forEach((doc) => {
             const data = doc.data();
@@ -215,19 +218,24 @@ async function loadProducts() {
             priceElement.className = 'price';
             priceElement.textContent = `Preț: ${data.price} RON`;
 
-            // Butonul de ștergere
-            const deleteButton = document.createElement('button');
-            deleteButton.textContent = "Șterge";
-            deleteButton.style.backgroundColor = '#e74c3c'; // Roșu pentru buton
-            deleteButton.style.marginTop = '10px';
-            deleteButton.addEventListener("click", () => deleteProduct(productId)); // Atașează funcția de ștergere
+            // Verifică dacă utilizatorul este autentificat
+            const user = auth.currentUser;
+            if (user) {
+                // Butonul de ștergere apare doar dacă utilizatorul este logat
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = "Șterge";
+                deleteButton.style.backgroundColor = '#e74c3c'; // Roșu pentru buton
+                deleteButton.style.marginTop = '10px';
+                deleteButton.addEventListener("click", () => deleteProduct(productId)); // Atașează funcția de ștergere
+
+                card.appendChild(deleteButton); // Adaugă butonul de ștergere
+            }
 
             // Adăugăm elementele la card
             card.appendChild(img);
             card.appendChild(title);
             card.appendChild(desc);
             card.appendChild(priceElement);
-            card.appendChild(deleteButton);
 
             // Adăugăm cardul în grid
             grid.appendChild(card);
