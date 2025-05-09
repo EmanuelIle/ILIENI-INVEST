@@ -1,221 +1,144 @@
 <!DOCTYPE html>
 <html lang="ro">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ILIENI-INVEST</title>
-    <link rel="icon" href="favicon.webp" type="image/webp">
-    <style>
-        body {
-            margin: 0 !important;
-            padding: 0;
-            background-image: url('https://emanuelile.github.io/ILIENI-INVEST/fundal.webp');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            height: 100vh;
-            font-family: 'Arial', sans-serif;
-            color: white;
-            text-align: center;
-            text-shadow: 1px 1px 3px black;
-        }
+  <meta charset="UTF-8" />
+  <title>Ilieni Invest</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="favicon.webp" type="image/webp" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: url('https://emanuelile.github.io/ILIENI-INVEST/fundal.webp') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+      text-shadow: 1px 1px 3px black;
+    }
 
-        h1 {
-            padding-top: 50px;
-        }
+    h1, h2, h3 {
+      text-align: center;
+    }
 
-        input[type="text"], input[type="email"], input[type="password"], input[type="number"] {
-            padding: 10px;
-            width: 100%;
-            max-width: 350px;
-            margin-top: 20px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            font-size: 14px;
-        }
+    form, section {
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 20px;
+      margin: 20px auto;
+      border-radius: 10px;
+      max-width: 500px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
 
-        input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus, input[type="number"]:focus {
-            outline: none;
-            border-color: #4CAF50;
-        }
+    input, textarea, button {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: none;
+      font-size: 16px;
+    }
 
-        button {
-            padding: 10px;
-            margin-top: 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background-color 0.3s ease;
-        }
+    input[type="file"] {
+      padding: 0;
+    }
 
-        button:hover {
-            background-color: #45a049;
-        }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
 
-        .auth-form {
-            padding: 30px;
-            background-color: rgba(0, 0, 0, 0.7);
-            border-radius: 15px;
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 320px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
-            z-index: 10;
-            animation: fadeIn 0.5s ease-in-out;
-        }
+    button:hover {
+      background-color: #45a049;
+    }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
+    #logoutButton {
+      background-color: red;
+      max-width: 500px;
+      margin: 0 auto 20px auto;
+      display: none;
+    }
 
-        .auth-form h3 {
-            margin-bottom: 20px;
-            color: #fff;
-            font-size: 20px;
-            font-weight: bold;
-        }
+    #productList li {
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 8px;
+      list-style: none;
+    }
 
-        ul {
-            padding: 0;
-            margin-top: 20px;
-            list-style: none;
-        }
+    #productList img {
+      max-width: 150px;
+      margin-top: 10px;
+      border-radius: 5px;
+    }
 
-        li {
-            list-style: none;
-            margin: 5px 0;
-        }
+    #cartSection {
+      display: none;
+      background-color: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 500px;
+      margin: 0 auto 40px auto;
+    }
 
-        #addProductForm {
-            display: none;
-            margin-top: 30px;
-        }
-
-        #welcomeMessage {
-            display: none;
-            font-size: 1.2em;
-            margin-top: 20px;
-        }
-
-        .no-products {
-            font-size: 1.2em;
-            color: #f44336;
-        }
-    </style>
+    #cartItems li {
+      list-style: none;
+      margin-bottom: 10px;
+    }
+  </style>
 </head>
 <body>
-    <h1>Bun venit la ILIENI-INVEST!</h1>
 
-    <!-- Căutare produse -->
-    <input type="text" id="searchInput" onkeyup="searchProducts()" placeholder="Căutare produs...">
+  <h1>Bun venit la ILIENI-INVEST</h1>
+
+  <!-- Autentificare / Înregistrare -->
+  <form id="authForm">
+    <h2 id="authTitle">Autentificare</h2>
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="password" id="password" placeholder="Parolă" required />
+    <button type="button" onclick="handleAuth()">Trimite</button>
+    <button type="button" onclick="toggleAuth()">Comută la Înregistrare/Autentificare</button>
+  </form>
+
+  <!-- Mesaj de bun venit -->
+  <h3 id="welcomeMessage" style="display:none;"></h3>
+
+  <!-- Formular adăugare produs -->
+  <form id="addProductForm" style="display:none;" onsubmit="event.preventDefault(); addProduct();">
+    <h2>Adaugă produs</h2>
+    <input type="text" id="productName" placeholder="Nume produs" required />
+    <textarea id="productDescription" placeholder="Descriere produs"></textarea>
+    <input type="number" id="productPrice" placeholder="Preț (RON)" required />
+    <input type="number" id="productQuantity" placeholder="Cantitate" required />
+    <input type="file" id="productImage" accept="image/*" />
+    <button type="submit">Adaugă produs</button>
+  </form>
+
+  <!-- Buton Logout -->
+  <button id="logoutButton" onclick="logout()">Deconectare</button>
+
+  <!-- Listă produse -->
+  <section>
+    <h2>Produse disponibile</h2>
     <ul id="productList"></ul>
-    <p id="noProducts" class="no-products" style="display:none;">Nu au fost găsite produse.</p>
+    <p id="noProducts" style="text-align: center; display: none;">Nu au fost găsite produse.</p>
+  </section>
 
-    <!-- Formular de Autentificare / Înregistrare -->
-    <div id="authForm" class="auth-form">
-        <h3 id="authTitle">Autentificare</h3>
-        <input type="email" id="email" placeholder="Email" required><br><br>
-        <input type="password" id="password" placeholder="Parolă" required><br><br>
-        <button onclick="handleAuth()">Autentificare</button>
-        <button onclick="toggleAuth()">Crează un cont</button>
-    </div>
-    
-<button id="logoutButton" style="display: none;" onclick="logout()">Ieși din cont</button>
-  
-    <!-- Mesaj de bun venit -->
-    <div id="welcomeMessage"></div>
-    
-<div id="userActions" style="display: none; margin-top: 20px;">
-    <button onclick="toggleProductForm()">Adaugă produs</button>
-    <button onclick="logout()">Delogare</button>
-</div>
-
-    <!-- Formular pentru Adăugarea unui produs -->
-    <div id="addProductForm">
-        <h3>Adaugă produs</h3>
-        <input type="text" id="productName" placeholder="Nume produs"><br><br>
-        <input type="text" id="productDescription" placeholder="Descriere produs"><br><br>
-        <input type="number" id="productPrice" placeholder="Preț produs" step="0.01"><br><br>
-        <input type="number" id="productQuantity" placeholder="Cantitate produs"><br><br>
-        <input type="file" id="productImage" accept="image/*"><br><br>
-        <button onclick="addProduct()">Adaugă</button>
-    </div>
-
-    <script type="module" src="https://emanuelile.github.io/ILIENI-INVEST/main.js"></script>
-
-    <script>
-        // Funcție de căutare produse
-        function searchProducts() {
-            const searchInput = document.getElementById('searchInput').value.toLowerCase();
-            const productList = document.getElementById('productList');
-            const products = productList.getElementsByTagName('li');
-            let found = false;
-
-            for (let i = 0; i < products.length; i++) {
-                const productName = products[i].getElementsByTagName('strong')[0].textContent.toLowerCase();
-                if (productName.includes(searchInput)) {
-                    products[i].style.display = 'block';
-                    found = true;
-                } else {
-                    products[i].style.display = 'none';
-                }
-            }
-
-            // Afișează mesaj dacă nu au fost găsite produse
-            const noProductsMessage = document.getElementById('noProducts');
-            if (!found) {
-                noProductsMessage.style.display = 'block';
-            } else {
-                noProductsMessage.style.display = 'none';
-            }
-        }
-
-        // Funcție de încărcare produse (apelați-o atunci când produsele sunt încărcate)
-        async function loadProducts() {
-            const productList = document.getElementById("productList");
-            productList.innerHTML = ""; // Curăță lista existentă
-            const querySnapshot = await getDocs(collection(db, "products"));
-
-            if (querySnapshot.empty) {
-                document.getElementById('noProducts').style.display = 'block';
-            } else {
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
-                    const li = document.createElement("li");
-                    li.style.display = "block";
-                    li.innerHTML = `
-                        <strong>${data.name}</strong><br>
-                        ${data.description ? `<em>${data.description}</em><br>` : ""}
-                        <span>Preț: ${data.price} RON</span><br>
-                        <span>Bucăți disponibile: ${data.quantity}</span><br>
-                        ${data.imageUrl ? `<img src="${data.imageUrl}" alt="${data.name}" style="max-width: 150px; margin-top: 5px;"><br>` : ""}
-                    `;
-                    productList.appendChild(li);
-                });
-            }
-        }
-
-        window.addEventListener("load", () => {
-            loadProducts(); // Afișăm produsele la încărcarea paginii
-        });
-    </script>
-    <!-- Coș de cumpărături -->
-<div id="cartSection" style="position: fixed; bottom: 10px; right: 10px; width: 300px; background: rgba(0,0,0,0.8); padding: 15px; border-radius: 10px; color: white; z-index: 20; display: none;">
-    <h3>🛒 Coșul tău</h3>
-    <ul id="cartItems" style="text-align: left;"></ul>
+  <!-- Coș de cumpărături -->
+  <section id="cartSection">
+    <h2>🛒 Coșul tău</h2>
+    <ul id="cartItems"></ul>
     <p id="cartTotal"><strong>Total:</strong> 0 RON</p>
     <button onclick="finalizeOrder()">Trimite Comanda</button>
     <button onclick="clearCart()">Golește Coșul</button>
-</div>
+  </section>
 
+  <!-- Script aplicație -->
+  <script type="module" src="main.js"></script>
 </body>
 </html>
