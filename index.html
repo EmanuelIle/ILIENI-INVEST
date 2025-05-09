@@ -14,7 +14,7 @@
             background-position: center;
             background-repeat: no-repeat;
             height: 100vh;
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             color: white;
             text-align: center;
             text-shadow: 1px 1px 3px black;
@@ -25,10 +25,18 @@
         }
 
         input[type="text"], input[type="email"], input[type="password"] {
-            padding: 8px;
+            padding: 10px;
             width: 100%;
-            max-width: 400px;
+            max-width: 350px;
             margin-top: 20px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus {
+            outline: none;
+            border-color: #4CAF50;
         }
 
         button {
@@ -37,7 +45,10 @@
             background-color: #4CAF50;
             color: white;
             border: none;
+            border-radius: 5px;
             cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
         }
 
         button:hover {
@@ -46,17 +57,31 @@
 
         .auth-form {
             padding: 30px;
-            background-color: rgba(0, 0, 0, 0.5);
-            border-radius: 10px;
+            background-color: rgba(0, 0, 0, 0.7); /* Transparent background */
+            border-radius: 15px;
             position: absolute;
-            top: 20px; /* Poziționează formularul la 20px distanță de sus */
-            right: 20px; /* Poziționează formularul la 20px distanță de dreapta */
-            width: 300px;
+            top: 20px;
+            right: 20px;
+            width: 320px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5); /* Adăugăm o umbră elegantă */
             z-index: 10;
+            animation: fadeIn 0.5s ease-in-out; /* Efect de fade-in */
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
         }
 
         .auth-form h3 {
             margin-bottom: 20px;
+            color: #fff;
+            font-size: 20px;
+            font-weight: bold;
         }
 
         ul {
