@@ -24,7 +24,7 @@
             padding-top: 50px;
         }
 
-        input[type="text"], input[type="email"], input[type="password"] {
+        input[type="text"], input[type="email"], input[type="password"], input[type="number"] {
             padding: 10px;
             width: 100%;
             max-width: 350px;
@@ -34,7 +34,7 @@
             font-size: 14px;
         }
 
-        input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus {
+        input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus, input[type="number"]:focus {
             outline: none;
             border-color: #4CAF50;
         }
@@ -134,14 +134,32 @@
     <input type="text" id="productName" placeholder="Nume produs"><br><br>
     <input type="text" id="productDescription" placeholder="Descriere produs"><br><br>
     <input type="number" id="productPrice" placeholder="Preț produs" step="0.01"><br><br>
+    <input type="number" id="productQuantity" placeholder="Cantitate produs"><br><br>
     <input type="file" id="productImage" accept="image/*"><br><br>
-    <button id="addProductButton">Adaugă</button>
+    <button onclick="addProduct()">Adaugă</button>
 </div>
 
 <!-- Listă Produse -->
 
 <script type="module" src="https://emanuelile.github.io/ILIENI-INVEST/main.js"></script>
-    
+
+<script>
+  // Funcție de căutare produse
+  function searchProducts() {
+    const searchInput = document.getElementById('searchInput').value.toLowerCase();
+    const productList = document.getElementById('productList');
+    const products = productList.getElementsByTagName('li');
+
+    for (let i = 0; i < products.length; i++) {
+      const productName = products[i].getElementsByTagName('strong')[0].textContent.toLowerCase();
+      if (productName.includes(searchInput)) {
+        products[i].style.display = 'block';
+      } else {
+        products[i].style.display = 'none';
+      }
+    }
+  }
+</script>
+
 </body>
 </html>
-
