@@ -11,4 +11,5 @@ function toggleAuth() {
 }
 
 // Fă funcția accesibilă din HTML
+window.handleAuth = handleAuth;
 window.toggleAuth = toggleAuth;
