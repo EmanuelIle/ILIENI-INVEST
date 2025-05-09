@@ -120,22 +120,8 @@ async function addProduct() {
         });
 
         alert("Produs adăugat cu succes!");
+        loadProducts();
 
-        const li = document.createElement("li");
-        li.style.display = "block";
-        li.innerHTML = `  
-            <strong>${name}</strong><br>
-            ${description ? `<em>${description}</em><br>` : ""}
-            <span>Preț: ${price} RON</span><br>
-            <span>Bucăți disponibile: ${quantity}</span><br>
-            ${imageUrl ? `<img src="${imageUrl}" alt="${name}" style="max-width: 150px; margin-top: 5px;"><br>` : ""}
-            <button class="edit-btn" onclick="editProduct('${name}')">Modifică</button>
-            <button class="delete-btn" onclick="deleteProduct('${name}')">Șterge</button>
-            <hr>
-        `;
-        document.getElementById("productList").appendChild(li);
-
-        // Resetare formular
         document.getElementById("productName").value = "";
         document.getElementById("productDescription").value = "";
         document.getElementById("productPrice").value = "";
@@ -156,8 +142,9 @@ async function loadProducts() {
         const productsQuery = query(collection(db, "products"), orderBy("createdAt", "desc"));
         const querySnapshot = await getDocs(productsQuery);
 
-        querySnapshot.forEach((doc) => {
-            const data = doc.data();
+        querySnapshot.forEach((docSnap) => {
+            const data = docSnap.data();
+            const productId = docSnap.id;
             const li = document.createElement("li");
             li.style.display = "block";
             li.innerHTML = `  
@@ -166,9 +153,10 @@ async function loadProducts() {
                 <span>Preț: ${data.price} RON</span><br>
                 <span>Bucăți disponibile: ${data.quantity}</span><br>
                 ${data.imageUrl ? `<img src="${data.imageUrl}" alt="${data.name}" style="max-width: 150px; margin-top: 5px;"><br>` : ""}
-                ${data.userId === currentUser.uid ? `  
-                    <button class="edit-btn" onclick="editProduct('${data.name}')">Modifică</button>
-                    <button class="delete-btn" onclick="deleteProduct('${data.name}')">Șterge</button>
+                <button onclick='addToCart(${JSON.stringify({ name: data.name, price: data.price })})'>Adaugă în coș</button><br>
+                ${data.userId === currentUser?.uid ? `  
+                    <button class="edit-btn" onclick="editProduct('${productId}')">Modifică</button>
+                    <button class="delete-btn" onclick="deleteProduct('${productId}')">Șterge</button>
                 ` : ""}
                 <hr>
             `;
@@ -189,7 +177,7 @@ async function deleteProduct(productId) {
         const productRef = doc(db, "products", productId);
         await deleteDoc(productRef);
         alert("Produs șters cu succes!");
-        loadProducts(); // Reîncărcăm lista de produse
+        loadProducts();
     } catch (error) {
         console.error("Eroare la ștergere produs:", error);
         alert("Eroare la ștergerea produsului.");
@@ -201,8 +189,9 @@ async function editProduct(productId) {
         alert("Trebuie să te autentifici pentru a modifica un produs.");
         return;
     }
-    // Logica de editare a produsului poate fi implementată aici
+    alert("Funcția de editare va fi implementată.");
 }
+
 let cart = [];
 
 function addToCart(product) {
@@ -269,7 +258,11 @@ function finalizeOrder() {
 window.addProduct = addProduct;
 window.deleteProduct = deleteProduct;
 window.editProduct = editProduct;
+window.addToCart = addToCart;
+window.removeFromCart = removeFromCart;
+window.clearCart = clearCart;
+window.finalizeOrder = finalizeOrder;
 
 window.addEventListener("load", () => {
-    loadProducts(); // Afișăm produsele la încărcarea paginii
+    loadProducts();
 });
