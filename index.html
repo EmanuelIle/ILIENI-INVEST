@@ -6,19 +6,19 @@
     <title>ILIENI-INVEST</title>
     <link rel="icon" href="favicon.webp" type="image/webp">
     <style>
-       body {
-    margin: 0 !important; /* Asigură-te că marginile sunt setate corect */
-    padding: 0;
-    background-image: url('https://emanuelile.github.io/ILIENI-INVEST/fundal.webp');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    height: 100vh;
-    font-family: Arial, sans-serif;
-    color: white;
-    text-align: center;
-    text-shadow: 1px 1px 3px black;
-}
+        body {
+            margin: 0 !important;
+            padding: 0;
+            background-image: url('https://emanuelile.github.io/ILIENI-INVEST/fundal.webp');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            color: white;
+            text-align: center;
+            text-shadow: 1px 1px 3px black;
+        }
 
         h1 {
             padding-top: 50px;
@@ -62,10 +62,44 @@
             list-style: none;
         }
 
-      li {
-    list-style: none;
-    margin: 5px 0;
-}
+        li {
+            list-style: none;
+            margin: 5px 0;
+            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 8px;
+            color: white;
+        }
+
+        .product-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        button.action-btn {
+            background-color: #f44336;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button.action-btn:hover {
+            background-color: #d32f2f;
+        }
+
+        button.edit-btn {
+            background-color: #ff9800;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button.edit-btn:hover {
+            background-color: #f57c00;
+        }
     </style>
 </head>
 <body>
@@ -74,33 +108,33 @@
     <!-- Căutare produse -->
     <input type="text" id="searchInput" onkeyup="searchProducts()" placeholder="Căutare produs...">
     <ul id="productList">
+        <!-- Produsele vor fi adăugate din JavaScript -->
     </ul>
 
-   <!-- Formular de Autentificare / Înregistrare -->
-<div id="authForm" class="auth-form">
-    <h3 id="authTitle">Autentificare</h3>
-    <input type="email" id="email" placeholder="Email" required><br><br>
-    <input type="password" id="password" placeholder="Parolă" required><br><br>
-    <button onclick="handleAuth()">Autentificare</button>
-    <button onclick="toggleAuth()">Crează un cont</button>
-</div>
+    <!-- Formular de Autentificare / Înregistrare -->
+    <div id="authForm" class="auth-form">
+        <h3 id="authTitle">Autentificare</h3>
+        <input type="email" id="email" placeholder="Email" required><br><br>
+        <input type="password" id="password" placeholder="Parolă" required><br><br>
+        <button onclick="handleAuth()">Autentificare</button>
+        <button onclick="toggleAuth()">Crează un cont</button>
+    </div>
 
-<!-- Mesaj de bun venit (afișat după autentificare) -->
-<div id="welcomeMessage" style="display: none; font-size: 1.2em; margin-top: 20px;"></div>
+    <!-- Mesaj de bun venit (afișat după autentificare) -->
+    <div id="welcomeMessage" style="display: none; font-size: 1.2em; margin-top: 20px;"></div>
 
-<!-- Formular pentru Adăugarea unui produs (afișat după autentificare) -->
-<div id="addProductForm" style="display: none; margin-top: 30px;">
-    <h3>Adaugă produs</h3>
-    <input type="text" id="productName" placeholder="Nume produs"><br><br>
-    <input type="text" id="productDescription" placeholder="Descriere produs"><br><br>
-    <input type="number" id="productPrice" placeholder="Preț produs" step="0.01"><br><br>
-    <input type="file" id="productImage" accept="image/*"><br><br>
-    <button id="addProductButton">Adaugă</button>
-</div>
+    <!-- Formular pentru Adăugarea unui produs (afișat după autentificare) -->
+    <div id="addProductForm" style="display: none; margin-top: 30px;">
+        <h3>Adaugă produs</h3>
+        <input type="text" id="productName" placeholder="Nume produs"><br><br>
+        <input type="text" id="productDescription" placeholder="Descriere produs"><br><br>
+        <input type="number" id="productPrice" placeholder="Preț produs" step="0.01"><br><br>
+        <input type="file" id="productImage" accept="image/*"><br><br>
+        <button id="addProductButton">Adaugă</button>
+    </div>
 
-<!-- Listă Produse -->
+    <!-- Listă Produse (Produsele vor fi afişate aici) -->
 
-<script type="module" src="https://emanuelile.github.io/ILIENI-INVEST/main.js"></script>
-    
+    <script type="module" src="https://emanuelile.github.io/ILIENI-INVEST/main.js"></script>
 </body>
 </html>
