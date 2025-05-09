@@ -187,9 +187,6 @@ async function deleteProduct(productId) {
 // Încarcă produsele și adaugă butonul de ștergere
 async function loadProducts() {
     try {
-        const productList = document.getElementById("productList");
-        productList.innerHTML = ""; // Curățăm lista anterioară
-
         const productsQuery = query(collection(db, "products"), orderBy("createdAt", "desc"));
         const querySnapshot = await getDocs(productsQuery);
 
