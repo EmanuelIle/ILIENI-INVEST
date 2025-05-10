@@ -1,10 +1,11 @@
-document.addEventListener("DOMContentLoaded", () => {
 // Import Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js";
 
+document.addEventListener("DOMContentLoaded", () => {
+  
 // Config Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyByP5ViWW4msYRqketugoVtPSUbu-Ykhts",
