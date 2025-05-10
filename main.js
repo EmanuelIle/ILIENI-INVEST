@@ -44,15 +44,41 @@ function handleAuth() {
   const isRegister = document.getElementById('authTitle').textContent === 'Înregistrare';
 
   if (isRegister) {
+    // Creare cont nou
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         console.log("Cont creat:", userCredential.user);
+        // Trimite email de verificare
+        userCredential.user.sendEmailVerification()
+          .then(() => {
+            console.log('Emailul de verificare a fost trimis!');
+            alert('Contul a fost creat. Te rugăm să îți verifici emailul pentru a-l activa.');
+          })
+          .catch((error) => {
+            console.error('Eroare la trimiterea emailului de verificare:', error);
+          });
       })
       .catch((error) => alert(error.message));
   } else {
+    // Autentificare utilizator existent
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         console.log("Autentificat:", userCredential.user);
+
+        // Verifică dacă utilizatorul și-a confirmat emailul
+        if (!userCredential.user.emailVerified) {
+          alert('Te rugăm să îți verifici emailul înainte de a continua!');
+          userCredential.user.sendEmailVerification()
+            .then(() => {
+              console.log('Emailul de verificare a fost trimis!');
+            })
+            .catch((error) => {
+              console.error('Eroare la trimiterea emailului de verificare:', error);
+            });
+        } else {
+          // Aici poți continua procesul dacă emailul este verificat
+          console.log('Emailul a fost verificat, utilizatorul este complet autentificat!');
+        }
       })
       .catch((error) => alert(error.message));
   }
