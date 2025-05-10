@@ -149,6 +149,16 @@
     <button type="button" onclick="handleAuth()">Trimite</button>
     <button type="button" onclick="toggleAuth()">Comută la Înregistrare/Autentificare</button>
   </form>
+<!-- Formular pentru adăugare produs -->
+<form id="addProductForm" style="display: none;">
+    <h2>Adaugă Produs</h2>
+    <input type="text" id="productName" placeholder="Nume produs" required>
+    <textarea id="productDescription" placeholder="Descriere produs"></textarea>
+    <input type="number" id="productPrice" placeholder="Preț (RON)" required>
+    <input type="number" id="productQuantity" placeholder="Cantitate" required>
+    <input type="file" id="productImage" accept="image/*">
+    <button type="button" onclick="addProduct()">Adaugă</button>
+</form>
 
   <!-- Mesaj de bun venit -->
   <h3 id="welcomeMessage" style="display:none;"></h3>
