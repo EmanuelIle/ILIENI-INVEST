@@ -1,3 +1,4 @@
+document.addEventListener("DOMContentLoaded", () => {
 // Import Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
@@ -178,6 +179,11 @@ function clearCart() {
 
 // -------- UTILIZATOR --------
 function displayWelcomeMessage(user) {
+  if (!welcomeMessage || !logoutButton || !authForm || !addProductForm) {
+    console.warn("Unele elemente nu există în DOM!");
+    return;
+  }
+
   welcomeMessage.style.display = 'block';
   welcomeMessage.textContent = `Bine ai venit, ${user.email}`;
   logoutButton.style.display = 'inline-block';
@@ -206,3 +212,4 @@ window.addProduct = addProduct;
 window.addToCart = addToCart;
 window.finalizeOrder = finalizeOrder;
 window.clearCart = clearCart;
+}); // final DOMContentLoaded
