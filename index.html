@@ -134,21 +134,36 @@
 
   <!-- Navigare prin categorii -->
   <nav>
-    <a href="#haine">Haine</a>
-    <a href="#accesorii">Accesorii</a>
-    <a href="#unelte">Unelte și Materiale</a>
-    <a href="#gadgeturi">Gadgeturi</a>
-    <a href="#comoditati">Comodități</a>
-  </nav>
+  <ul>
+    <li><a href="#haine">Haine</a></li>
+    <li><a href="#accesorii">Accesorii</a></li>
+    <li><a href="#unelte">Unelte și Materiale</a></li>
+    <li><a href="#gadgeturi">Gadgeturi</a></li>
+    <li><a href="#comoditati">Comodități</a></li>
+  </ul>
+</nav>
 
-  <!-- Autentificare / Înregistrare -->
-  <form id="authForm">
-    <h2 id="authTitle">Autentificare</h2>
+
+<!-- Autentificare / Înregistrare -->
+<form id="authForm" onsubmit="handleAuth(event)">
+  <h2 id="authTitle">Autentificare</h2>
+
+  <div>
+    <label for="email">Email</label>
     <input type="email" id="email" placeholder="Email" required />
+  </div>
+
+  <div>
+    <label for="password">Parolă</label>
     <input type="password" id="password" placeholder="Parolă" required />
-    <button type="button" onclick="handleAuth()">Trimite</button>
+  </div>
+
+  <div style="margin-top: 10px;">
+    <button type="submit">Trimite</button>
     <button type="button" onclick="toggleAuth()">Comută la Înregistrare/Autentificare</button>
-  </form>
+  </div>
+</form>
+
 <!-- Formular pentru adăugare produs -->
 <form id="addProductForm" style="display: none;">
     <h2>Adaugă Produs</h2>
