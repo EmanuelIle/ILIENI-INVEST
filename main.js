@@ -119,7 +119,7 @@ async function addProduct() {
 
   let imageUrl = "";
   if (imageFile) {
-    const imgRef = storageRef(storage, `images/${imageFile.name}`);
+    const imgRef = storageRef(storage, `product_images/${imageFile.name}`);
     await uploadBytes(imgRef, imageFile);
     imageUrl = await getDownloadURL(imgRef);
   }
