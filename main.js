@@ -39,7 +39,7 @@ import {
 document.addEventListener("DOMContentLoaded", () => {
   // Configurare Firebase
   const firebaseConfig = {
-    apiKey: "AIzaSyByP5ViWW4msYRqketugoVtPSUbu-Ykhts",,
+    apiKey: "AIzaSyByP5ViWW4msYRqketugoVtPSUbu-Ykhts",
     authDomain: "ilieni-invest.firebaseapp.com",
     projectId: "ilieni-invest",
     storageBucket: "ilieni-invest.appspot.com",
