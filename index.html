@@ -4,267 +4,276 @@
   <meta charset="UTF-8" />
   <title>Ilieni Invest - Magazin Online</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Ilieni Invest - Magazin online cu produse diverse: haine, accesorii, unelte, gadgeturi și alte comodități" />
-  <link rel="icon" href="/images/favicon.webp" type="image/webp" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="icon" href="favicon.webp" type="image/webp" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: url('https://emanuelile.github.io/ILIENI-INVEST/fundal.webp') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+      text-shadow: 1px 1px 3px black;
+    }
+
+    h1, h2, h3 {
+      text-align: center;
+    }
+
+    form, section {
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 20px;
+      margin: 20px auto;
+      border-radius: 10px;
+      max-width: 1000px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    input, textarea, button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: none;
+      font-size: 16px;
+    }
+
+    input[type="file"] {
+      padding: 0;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #logoutButton {
+      background-color: red;
+      max-width: 500px;
+      margin: 0 auto 20px auto;
+      display: none;
+    }
+
+    #productList li, #cartItems li {
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 8px;
+      list-style: none;
+    }
+
+    #productList img, #cartItems img {
+      max-width: 150px;
+      margin-top: 10px;
+      border-radius: 5px;
+    }
+
+    #cartSection {
+      display: none;
+      background-color: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 500px;
+      margin: 0 auto 40px auto;
+    }
+
+    nav {
+      margin: 20px;
+      text-align: center;
+    }
+
+    nav a {
+      color: white;
+      margin: 10px;
+      font-size: 18px;
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 5px;
+      background-color: rgba(0, 0, 0, 0.6);
+      transition: background-color 0.3s ease;
+    }
+
+    nav a:hover {
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    .category-section {
+      display: flex;
+      justify-content: space-around;
+      margin: 20px 0;
+    }
+
+    .category-section div {
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 15px;
+      width: 30%;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      text-align: center;
+    }
+
+    .category-section img {
+      width: 100%;
+      max-width: 100px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>Ilieni Invest - Magazin Online</h1>
-      
-      <!-- Navigare prin categorii -->
-      <nav>
-        <a href="#haine"><i class="fas fa-tshirt"></i> Haine</a>
-        <a href="#accesorii"><i class="fas fa-glasses"></i> Accesorii</a>
-        <a href="#unelte"><i class="fas fa-tools"></i> Unelte</a>
-        <a href="#gadgeturi"><i class="fas fa-mobile-alt"></i> Gadgeturi</a>
-        <a href="#comoditati"><i class="fas fa-home"></i> Comodități</a>
-      </nav>
-      
-      <!-- Mesaj de bun venit & Logout -->
-      <div class="user-area">
-        <h3 id="welcomeMessage" style="display:none;"></h3>
-        <button id="logoutButton" onclick="logout()">
-          <i class="fas fa-sign-out-alt"></i> Deconectare
-        </button>
+
+  <h1>Bun venit la ILIENI-INVEST - Magazin Online</h1>
+
+  <!-- Navigare prin categorii -->
+  <nav>
+    <a href="#haine">Haine</a>
+    <a href="#accesorii">Accesorii</a>
+    <a href="#unelte">Unelte și Materiale</a>
+    <a href="#gadgeturi">Gadgeturi</a>
+    <a href="#comoditati">Comodități</a>
+  </nav>
+
+  <!-- Autentificare / Înregistrare -->
+  <form id="authForm">
+    <h2 id="authTitle">Autentificare</h2>
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="password" id="password" placeholder="Parolă" required />
+    <button type="button" onclick="handleAuth()">Trimite</button>
+    <button type="button" onclick="toggleAuth()">Comută la Înregistrare/Autentificare</button>
+  </form>
+
+  <!-- Mesaj de bun venit -->
+  <h3 id="welcomeMessage" style="display:none;"></h3>
+
+  <!-- Buton Logout -->
+  <button id="logoutButton" onclick="logout()">Deconectare</button>
+
+  <!-- Secțiuni produse -->
+  <section id="haine">
+    <h2>Haine</h2>
+    <div class="category-section">
+      <div>
+        <h3>Bărbați</h3>
+        <img src="path_to_image" alt="Bărbați">
+        <button onclick="addProduct('haine-barbati')">Adaugă produs</button>
       </div>
-    </header>
-
-    <main>
-      <!-- Autentificare / Înregistrare -->
-      <form id="authForm" class="auth-form">
-        <h2 id="authTitle">Autentificare</h2>
-
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input type="email" id="email" placeholder="Adresa de email" required />
-        </div>
-
-        <div class="form-group">
-          <label for="password">Parolă</label>
-          <input type="password" id="password" placeholder="Parola contului" required />
-        </div>
-
-        <div class="form-actions">
-          <button type="submit" class="btn-primary">
-            <i class="fas fa-sign-in-alt"></i> Autentificare
-          </button>
-          <button type="button" class="btn-secondary" id="toggleAuthBtn">
-            <i class="fas fa-exchange-alt"></i> Comută la Înregistrare
-          </button>
-        </div>
-      </form>
-
-      <!-- Formular pentru adăugare produs -->
-      <form id="addProductForm" style="display: none;">
-        <h2><i class="fas fa-plus-circle"></i> Adaugă Produs Nou</h2>
-
-        <input type="hidden" id="productId">
-        <input type="hidden" id="productCategory">
-
-        <div class="form-group">
-          <label for="productName">Nume produs</label>
-          <input type="text" id="productName" placeholder="Introduceți numele produsului" required>
-        </div>
-
-        <div class="form-group">
-          <label for="productDescription">Descriere</label>
-          <textarea id="productDescription" placeholder="Descriere detaliată a produsului" rows="3"></textarea>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group half">
-            <label for="productPrice">Preț (RON)</label>
-            <input type="number" id="productPrice" placeholder="Preț" min="0" step="0.01" required>
-          </div>
-
-          <div class="form-group half">
-            <label for="productQuantity">Cantitate în stoc</label>
-            <input type="number" id="productQuantity" placeholder="Cantitate" min="0" required>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="productImage">Imagine produs</label>
-          <input type="file" id="productImage" accept="image/*">
-          <div class="img-preview-container">
-            <img id="previewImage" class="img-preview" style="display: none;" />
-          </div>
-        </div>
-
-        <div class="form-actions">
-          <button type="submit" class="btn-primary" id="saveProductBtn">
-            <i class="fas fa-save"></i> Salvează produs
-          </button>
-          <button type="button" class="btn-secondary" id="cancelProductBtn">
-            <i class="fas fa-times"></i> Anulează
-          </button>
-        </div>
-      </form>
-
-      <!-- Secțiuni produse -->
-      <section id="haine" class="category-section">
-        <h2><i class="fas fa-tshirt"></i> Haine</h2>
-        <div class="category-grid">
-          <div class="category-card" data-category="haine-barbati">
-            <img src="/images/haine-barbati.webp" alt="Îmbrăcăminte bărbați" class="category-image">
-            <h3>Bărbați</h3>
-            <button class="btn-add" onclick="selectCategory('haine-barbati')">
-              <i class="fas fa-plus"></i> Adaugă produs
-            </button>
-          </div>
-          <div class="category-card" data-category="haine-femei">
-            <img src="/images/haine-femei.webp" alt="Îmbrăcăminte femei" class="category-image">
-            <h3>Femei</h3>
-            <button class="btn-add" onclick="selectCategory('haine-femei')">
-              <i class="fas fa-plus"></i> Adaugă produs
-            </button>
-          </div>
-        </div>
-      </section>
-
-      <section id="accesorii" class="category-section">
-        <h2><i class="fas fa-glasses"></i> Accesorii</h2>
-        <div class="category-grid">
-          <div class="category-card" data-category="accesorii-barbati">
-            <img src="/images/accesorii-barbati.webp" alt="Accesorii bărbați" class="category-image">
-            <h3>Bărbați</h3>
-            <button class="btn-add" onclick="selectCategory('accesorii-barbati')">
-              <i class="fas fa-plus"></i> Adaugă produs
-            </button>
-          </div>
-          <div class="category-card" data-category="accesorii-femei">
-            <img src="/images/accesorii-femei.webp" alt="Accesorii femei" class="category-image">
-            <h3>Femei</h3>
-            <button class="btn-add" onclick="selectCategory('accesorii-femei')">
-              <i class="fas fa-plus"></i> Adaugă produs
-            </button>
-          </div>
-        </div>
-      </section>
-
-      <section id="unelte" class="category-section">
-        <h2><i class="fas fa-tools"></i> Unelte și Materiale</h2>
-        <div class="category-grid">
-          <div class="category-card" data-category="unelte">
-            <img src="/images/unelte.webp" alt="Unelte" class="category-image">
-            <h3>Unelte</h3>
-            <button class="btn-add" onclick="selectCategory('unelte')">
-              <i class="fas fa-plus"></i> Adaugă produs
-            </button>
-          </div>
-          <div class="category-card" data-category="materiale">
-            <img src="/images/materiale.webp" alt="Materiale" class="category-image">
-            <h3>Materiale</h3>
-            <button class="btn-add" onclick="selectCategory('materiale')">
-              <i class="fas fa-plus"></i> Adaugă produs
-            </button>
-          </div>
-        </div>
-      </section>
-
-      <section id="gadgeturi" class="category-section">
-        <h2><i class="fas fa-mobile-alt"></i> Gadgeturi</h2>
-        <div class="category-grid">
-          <div class="category-card" data-category="telefoane">
-            <img src="/images/telefoane.webp" alt="Telefoane" class="category-image">
-            <h3>Telefoane</h3>
-            <button class="btn-add" onclick="selectCategory('telefoane')">
-              <i class="fas fa-plus"></i> Adaugă produs
-            </button>
-          </div>
-          <div class="category-card" data-category="laptopuri">
-            <img src="/images/laptopuri.webp" alt="Laptopuri" class="category-image">
-            <h3>Laptopuri</h3>
-            <button class="btn-add" onclick="selectCategory('laptopuri')">
-              <i class="fas fa-plus"></i> Adaugă produs
-            </button>
-          </div>
-          <div class="category-card" data-category="casti">
-            <img src="/images/casti.webp" alt="Căști" class="category-image">
-            <h3>Căști</h3>
-            <button class="btn-add" onclick="selectCategory('casti')">
-              <i class="fas fa-plus"></i> Adaugă produs
-            </button>
-          </div>
-        </div>
-      </section>
-
-      <section id="comoditati" class="category-section">
-        <h2><i class="fas fa-home"></i> Comodități</h2>
-        <div class="category-grid">
-          <div class="category-card" data-category="telescoape">
-            <img src="/images/telescoape.webp" alt="Telescoape" class="category-image">
-            <h3>Telescoape</h3>
-            <button class="btn-add" onclick="selectCategory('telescoape')">
-              <i class="fas fa-plus"></i> Adaugă produs
-            </button>
-          </div>
-          <div class="category-card" data-category="binocluri">
-            <img src="/images/binocluri.webp" alt="Binocluri" class="category-image">
-            <h3>Binocluri</h3>
-            <button class="btn-add" onclick="selectCategory('binocluri')">
-              <i class="fas fa-plus"></i> Adaugă produs
-            </button>
-          </div>
-        </div>
-      </section>
-
-      <!-- Listă produse -->
-      <section id="products-section">
-        <h2><i class="fas fa-shopping-basket"></i> Produse disponibile</h2>
-        <div class="filter-tools">
-          <div class="search-box">
-            <input type="text" id="productSearch" placeholder="Caută produse...">
-            <i class="fas fa-search"></i>
-          </div>
-          <div class="filter-box">
-            <select id="categoryFilter">
-              <option value="">Toate categoriile</option>
-              <option value="haine">Haine</option>
-              <option value="accesorii">Accesorii</option>
-              <option value="unelte">Unelte și Materiale</option>
-              <option value="gadgeturi">Gadgeturi</option>
-              <option value="comoditati">Comodități</option>
-            </select>
-          </div>
-        </div>
-        <div id="productList" class="product-grid"></div>
-        <p id="noProducts" class="empty-message">Nu au fost găsite produse.</p>
-      </section>
-
-      <!-- Coș de cumpărături -->
-      <section id="cartSection">
-        <h2><i class="fas fa-shopping-cart"></i> Coșul tău</h2>
-        <div id="cartItems" class="cart-items"></div>
-        <div id="cartSummary">
-          <p id="cartTotal"><strong>Total:</strong> <span>0 RON</span></p>
-          <button class="btn-primary" id="orderBtn">
-            <i class="fas fa-check"></i> Trimite Comanda
-          </button>
-          <button class="btn-secondary" id="clearCartBtn">
-            <i class="fas fa-trash"></i> Golește Coșul
-          </button>
-        </div>
-      </section>
-    </main>
-
-    <footer>
-      <p>&copy; 2023 Ilieni Invest. Toate drepturile rezervate.</p>
-    </footer>
-  </div>
-
-  <div id="modal" class="modal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <div id="modalContent"></div>
+      <div>
+        <h3>Femei</h3>
+        <img src="path_to_image" alt="Femei">
+        <button onclick="addProduct('haine-femei')">Adaugă produs</button>
+      </div>
     </div>
-  </div>
+  </section>
+
+  <section id="accesorii">
+    <h2>Accesorii</h2>
+    <div class="category-section">
+      <div>
+        <h3>Bărbați</h3>
+        <img src="path_to_image" alt="Accesorii Bărbați">
+        <button onclick="addProduct('accesorii-barbati')">Adaugă produs</button>
+      </div>
+      <div>
+        <h3>Femei</h3>
+        <img src="path_to_image" alt="Accesorii Femei">
+        <button onclick="addProduct('accesorii-femei')">Adaugă produs</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="unelte">
+    <h2>Unelte și Materiale</h2>
+    <div class="category-section">
+      <div>
+        <h3>Unelte</h3>
+        <img src="path_to_image" alt="Unelte">
+        <button onclick="addProduct('unelte')">Adaugă produs</button>
+      </div>
+      <div>
+        <h3>Materiale</h3>
+        <img src="path_to_image" alt="Materiale">
+        <button onclick="addProduct('materiale')">Adaugă produs</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="gadgeturi">
+    <h2>Gadgeturi</h2>
+    <div class="category-section">
+      <div>
+        <h3>Telefoane</h3>
+        <img src="path_to_image" alt="Telefoane">
+        <button onclick="addProduct('telefoane')">Adaugă produs</button>
+      </div>
+      <div>
+        <h3>Laptopuri</h3>
+        <img src="path_to_image" alt="Laptopuri">
+        <button onclick="addProduct('laptopuri')">Adaugă produs</button>
+      </div>
+      <div>
+        <h3>Tablete</h3>
+        <img src="path_to_image" alt="Tablete">
+        <button onclick="addProduct('tablete')">Adaugă produs</button>
+      </div>
+      <div>
+        <h3>Ceasuri inteligente</h3>
+        <img src="path_to_image" alt="Ceasuri inteligente">
+        <button onclick="addProduct('ceasuri-inteligente')">Adaugă produs</button>
+      </div>
+      <div>
+        <h3>Căști</h3>
+        <img src="path_to_image" alt="Căști">
+        <button onclick="addProduct('casti')">Adaugă produs</button>
+      </div>
+      <div>
+        <h3>Boxe</h3>
+        <img src="path_to_image" alt="Boxe">
+        <button onclick="addProduct('boxe')">Adaugă produs</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="comoditati">
+    <h2>Comodități</h2>
+    <div class="category-section">
+      <div>
+        <h3>Telescoape</h3>
+        <img src="path_to_image" alt="Telescoape">
+        <button onclick="addProduct('telescoape')">Adaugă produs</button>
+      </div>
+      <div>
+        <h3>Binocluri</h3>
+        <img src="path_to_image" alt="Binocluri">
+        <button onclick="addProduct('binocluri')">Adaugă produs</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Listă produse -->
+  <section>
+    <h2>Produse disponibile</h2>
+    <ul id="productList"></ul>
+    <p id="noProducts" style="text-align: center; display: none;">Nu au fost găsite produse.</p>
+  </section>
+
+  <!-- Coș de cumpărături -->
+  <section id="cartSection">
+    <h2>🛒 Coșul tău</h2>
+    <ul id="cartItems"></ul>
+    <p id="cartTotal"><strong>Total:</strong> 0 RON</p>
+    <button onclick="finalizeOrder()">Trimite Comanda</button>
+    <button onclick="clearCart()">Golește Coșul</button>
+  </section>
 
   <!-- Script aplicație -->
-  <script type="module" src="/js/main.js"></script>
+  <script type="module" src="main.js"></script>
 </body>
 </html>
