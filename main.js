@@ -156,6 +156,7 @@ async function loadProducts() {
         Stoc: ${data.quantity}<br>
         ${data.imageUrl ? `<img src="${data.imageUrl}" style="max-width:150px;"><br>` : ""}
       `;
+  <button onclick="editProduct('ID_PRODUS')">Modifică</button>
       productList.appendChild(li);
     });
   }
