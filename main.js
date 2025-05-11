@@ -4,6 +4,7 @@
  */
 
 // Import Firebase
+// Import Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
 import { 
   getAuth, 
@@ -38,12 +39,12 @@ import {
 document.addEventListener("DOMContentLoaded", () => {
   // Configurare Firebase
   const firebaseConfig = {
-    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-    authDomain: `${import.meta.env.VITE_FIREBASE_PROJECT_ID}.firebaseapp.com`,
-    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-    storageBucket: `${import.meta.env.VITE_FIREBASE_PROJECT_ID}.appspot.com`,
+    apiKey: "AIzaSyByP5ViWW4msYRqketugoVtPSUbu-Ykhts",,
+    authDomain: "ilieni-invest.firebaseapp.com",
+    projectId: "ilieni-invest",
+    storageBucket: "ilieni-invest.appspot.com",
     messagingSenderId: "1083438978721",
-    appId: import.meta.env.VITE_FIREBASE_APP_ID,
+    appId: "1:1083438978721:web:fa4c2aaf6cd53286e302e0",
     measurementId: "G-2XBHW5934G"
   };
 
