@@ -111,6 +111,7 @@ async function addProduct() {
   const price = parseFloat(document.getElementById('productPrice').value);
   const quantity = parseInt(document.getElementById('productQuantity').value);
   const imageFile = document.getElementById('productImage').files[0];
+  <button onclick="editProduct('ID_PRODUS')">Modifică</button>
 
   if (!name || !price || !quantity) {
     alert("Completează toate câmpurile!");
@@ -154,13 +155,24 @@ async function loadProducts() {
         Preț: ${data.price} RON<br>
         Stoc: ${data.quantity}<br>
         ${data.imageUrl ? `<img src="${data.imageUrl}" style="max-width:150px;"><br>` : ""}
-        <button onclick="addToCart('${doc.id}', '${data.name}', ${data.price})">Adaugă în coș</button>
       `;
       productList.appendChild(li);
     });
   }
 }
-
+// Funcția pentru modificare
+async function editProduct(id) {
+  const docRef = doc(db, "products", id);
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    const product = docSnap.data();
+    document.getElementById('productName').value = product.name;
+    document.getElementById('productDescription').value = product.description;
+    document.getElementById('productPrice').value = product.price;
+    document.getElementById('productQuantity').value = product.quantity;
+    window.editingProductId = id;
+  }
+}
 // -------- COȘ --------
 function addToCart(productId, productName, productPrice) {
   const item = cart.find(i => i.productId === productId);
