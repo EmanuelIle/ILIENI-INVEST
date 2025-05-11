@@ -122,6 +122,7 @@ async function addProduct() {
     const imgRef = storageRef(storage, `product_images/${imageFile.name}`);
     await uploadBytes(imgRef, imageFile);
     imageUrl = await getDownloadURL(imgRef);
+    console.log("Image uploaded at:", imageUrl);
   }
 
   await addDoc(collection(db, "products"), {
