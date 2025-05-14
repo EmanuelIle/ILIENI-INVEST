@@ -3,9 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ILIENI-INVEST</title>
+  <title>ILIENI-INVEST - Magazin Online</title>
   <link rel="icon" href="favicon.png" type="image/png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    /* Setări generale */
     body {
       margin: 0;
       padding: 0;
@@ -13,99 +15,559 @@
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-      height: 100vh;
+      background-attachment: fixed;
+      min-height: 100vh;
       font-family: Arial, sans-serif;
       color: white;
-      text-align: center;
       text-shadow: 1px 1px 3px black;
     }
 
-    h1 {
-      padding-top: 50px;
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
     }
 
+    header {
+      text-align: center;
+      padding: 20px 0;
+      position: relative;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      margin-top: 40px;
+      background-color: rgba(0, 0, 0, 0.6);
+      padding: 10px;
+      border-radius: 5px;
+      text-align: center;
+    }
+
+    /* Coș de cumpărături */
     #cartIcon {
       position: fixed;
       top: 10px;
       right: 10px;
-      background-color: #fff;
-      color: #000;
-      padding: 10px;
+      background-color: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 10px 15px;
       border-radius: 5px;
       cursor: pointer;
       z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+
+    #cartIcon:hover {
+      background-color: rgba(0, 0, 0, 0.9);
+      transform: scale(1.05);
     }
 
     #cart {
       position: fixed;
-      top: 50px;
+      top: 60px;
       right: 10px;
-      width: 300px;
+      width: 350px;
+      max-height: 80vh;
+      overflow-y: auto;
       background-color: rgba(0, 0, 0, 0.9);
       padding: 20px;
       border-radius: 10px;
       display: none;
       z-index: 1000;
       text-align: left;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
     }
 
-    input[type="text"] {
-      padding: 8px;
-      width: 90%;
+    /* Bare de căutare și filtrare */
+    .search-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 800px;
+      margin: 20px auto;
+      gap: 10px;
+    }
+
+    @media (min-width: 768px) {
+      .search-container {
+        flex-direction: row;
+        justify-content: center;
+      }
+    }
+
+    #searchInput {
+      padding: 12px;
+      width: 100%;
       max-width: 400px;
-      margin-top: 20px;
       border: none;
+      border-radius: 5px;
+      background-color: rgba(255, 255, 255, 0.9);
+      font-size: 16px;
+    }
+
+    #categoryFilter {
+      padding: 12px;
+      border: none;
+      border-radius: 5px;
+      background-color: rgba(255, 255, 255, 0.9);
+      color: #333;
+      font-size: 16px;
+      width: 100%;
+      max-width: 200px;
+    }
+
+    /* Navigare categorii */
+    .category-nav {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    .category-button {
+      padding: 8px 15px;
+      border: none;
+      border-radius: 5px;
+      background-color: rgba(0, 0, 0, 0.7);
+      color: white;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    .category-button:hover, .category-button.active {
+      background-color: #00aaff;
+    }
+
+    /* Produse */
+    .section {
+      margin-bottom: 40px;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 10px;
+    }
+
+    .product-card {
+      background-color: rgba(0, 0, 0, 0.7);
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+      transition: transform 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .product-image {
+      width: 100%;
+      height: 200px;
+      object-fit: contain;
+      margin-bottom: 10px;
       border-radius: 5px;
     }
 
-    ul {
-      padding: 0;
-      margin-top: 20px;
-      list-style: none;
+    .product-name {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 5px;
     }
 
-    li {
-      margin: 10px 0;
+    .product-description {
+      font-size: 14px;
+      margin-bottom: 10px;
+      flex-grow: 1;
     }
 
-    img {
-      max-width: 150px;
-      margin-top: 5px;
+    .product-price {
+      font-size: 18px;
+      font-weight: bold;
+      color: #00aaff;
+      margin-bottom: 5px;
     }
 
-    button {
-      margin-top: 5px;
-      padding: 5px 10px;
-      border: none;
-      border-radius: 5px;
+    .product-stock {
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .add-to-cart {
+      padding: 8px 15px;
       background-color: #00aaff;
       color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      width: 100%;
+    }
+
+    .add-to-cart:hover {
+      background-color: #0088cc;
+    }
+
+    /* Elemente coș */
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .cart-item-info {
+      flex-grow: 1;
+    }
+
+    .cart-item-title {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .cart-item-price {
+      color: #00aaff;
+    }
+
+    .cart-item-controls {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .quantity-control {
+      background-color: #333;
+      border: none;
+      color: white;
+      width: 25px;
+      height: 25px;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
     }
 
-    button:hover {
-      background-color: #0088cc;
+    .cart-quantity {
+      width: 30px;
+      text-align: center;
+      background-color: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: white;
+      padding: 3px;
+      border-radius: 3px;
+    }
+
+    .remove-item {
+      background-color: #ff3333;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      width: 25px;
+      height: 25px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cart-summary {
+      margin-top: 20px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .cart-total {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      text-align: right;
+    }
+
+    .cart-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .checkout-btn, .clear-cart-btn {
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      flex-grow: 1;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .checkout-btn {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .clear-cart-btn {
+      background-color: #ff3333;
+      color: white;
+    }
+
+    /* Notificări */
+    .notification {
+      position: fixed;
+      top: 70px;
+      right: 20px;
+      background-color: rgba(0, 0, 0, 0.9);
+      color: white;
+      padding: 15px 20px;
+      border-radius: 5px;
+      z-index: 1001;
+      animation: fadeIn 0.3s, fadeOut 0.3s 2.7s;
+      opacity: 0;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      max-width: 300px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+
+    /* Overlay pentru confirmări */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1002;
+      display: none;
+    }
+
+    .confirmation-modal {
+      background-color: rgba(0, 0, 0, 0.9);
+      border-radius: 10px;
+      padding: 20px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+
+    .modal-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .modal-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .confirm-btn {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .cancel-btn {
+      background-color: #ff3333;
+      color: white;
+    }
+
+    /* PayPal Button */
+    #paypal-button-container {
+      margin-top: 20px;
+    }
+
+    /* Loading indicator */
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 20px 0;
+    }
+
+    .loading-spinner {
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top: 4px solid #00aaff;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .product-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      }
+      
+      #cart {
+        width: 90%;
+        max-width: 350px;
+        right: 5%;
+        left: 5%;
+        margin: 0 auto;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .product-grid {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      h2 {
+        font-size: 1.5rem;
+      }
+    }
+
+    /* No products message */
+    .no-products {
+      text-align: center;
+      padding: 30px;
+      background-color: rgba(0, 0, 0, 0.7);
+      border-radius: 10px;
+      margin: 20px auto;
+      max-width: 500px;
     }
   </style>
 </head>
 <body>
+  <header>
+    <h1>ILIENI-INVEST - Magazin Online</h1>
+  </header>
 
-  <h1>Bun venit la ILIENI-INVEST!</h1>
+  <div class="container">
+    <!-- Cart Icon -->
+    <div id="cartIcon" onclick="toggleCart()">
+      <i class="fas fa-shopping-cart"></i> Coș (<span id="cartCount">0</span>)
+    </div>
 
-  <div id="cartIcon" onclick="toggleCart()">🛒 Coș (<span id="cartCount">0</span>)</div>
-  <div id="cart">
-    <h3>Coș de cumpărături</h3>
-    <ul id="cartItems"></ul>
-    <button onclick="checkout()">Trimite comanda</button>
+    <!-- Shopping Cart -->
+    <div id="cart">
+      <h3>Coș de cumpărături</h3>
+      <div id="cartItems"></div>
+      <div class="cart-summary">
+        <div class="cart-total">Total: <span id="cartTotal">0</span> RON</div>
+        <div class="cart-buttons">
+          <button class="checkout-btn" id="checkoutBtn">
+            <i class="fas fa-check"></i> Trimite comanda
+          </button>
+          <button class="clear-cart-btn" onclick="clearCart()">
+            <i class="fas fa-trash"></i> Golește
+          </button>
+        </div>
+        <div id="paypal-button-container"></div>
+      </div>
+    </div>
+
+    <!-- Search and Filter -->
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="Căutare produs..." onkeyup="searchProducts()">
+      <select id="categoryFilter" onchange="filterByCategory()">
+        <option value="all">Toate categoriile</option>
+        <option value="Ceasuri si accesorii">Ceasuri și accesorii</option>
+        <option value="Articole Sportive">Articole Sportive</option>
+        <option value="Fashion">Fashion</option>
+        <option value="Gadgeturi">Gadgeturi</option>
+        <option value="Comoditati">Comodități</option>
+      </select>
+    </div>
+
+    <!-- Category Navigation -->
+    <div class="category-nav">
+      <button class="category-button active" data-category="all">Toate produsele</button>
+      <button class="category-button" data-category="Ceasuri si accesorii">Ceasuri și accesorii</button>
+      <button class="category-button" data-category="Articole Sportive">Articole Sportive</button>
+      <button class="category-button" data-category="Fashion">Fashion</button>
+      <button class="category-button" data-category="Gadgeturi">Gadgeturi</button>
+      <button class="category-button" data-category="Comoditati">Comodități</button>
+    </div>
+
+    <!-- Loading Indicator -->
+    <div id="loadingIndicator" class="loading">
+      <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Product Categories -->
+    <div id="productCategories">
+      <!-- Products will be loaded here by category -->
+    </div>
   </div>
 
-  <input type="text" id="searchInput" onkeyup="searchProducts()" placeholder="Căutare produs...">
-  <ul id="productList"></ul>
+  <!-- Confirmation Overlay -->
+  <div class="overlay" id="confirmationOverlay">
+    <div class="confirmation-modal">
+      <div class="modal-title">Confirmare comandă</div>
+      <p>Ești sigur că dorești să plasezi comanda în valoare de <span id="confirmTotal">0</span> RON?</p>
+      <div class="modal-buttons">
+        <button class="modal-btn confirm-btn" onclick="proceedToCheckout()">
+          <i class="fas fa-check"></i> Confirmă
+        </button>
+        <button class="modal-btn cancel-btn" onclick="closeConfirmation()">
+          <i class="fas fa-times"></i> Anulează
+        </button>
+      </div>
+    </div>
+  </div>
 
+  <!-- Notification Container -->
+  <div id="notificationContainer"></div>
+
+  <!-- Firebase -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+    // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyByP5ViWW4msYRqketugoVtPSUbu-Ykhts",
       authDomain: "ilieni-invest.firebaseapp.com",
@@ -116,81 +578,682 @@
       measurementId: "G-2XBHW5934G"
     };
 
+    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    const cart = [];
+    // Global variables
+    window.cart = [];
+    window.categories = ['Ceasuri si accesorii', 'Articole Sportive', 'Fashion', 'Gadgeturi', 'Comoditati'];
+    window.allProducts = [];
 
-    function searchProducts() {
-      const input = document.getElementById("searchInput").value.toLowerCase();
-      const items = document.querySelectorAll("#productList li");
-      items.forEach(li => {
-        li.style.display = li.textContent.toLowerCase().includes(input) ? "block" : "none";
-      });
-    }
-
+    // Load products from Firebase
     async function loadProducts() {
-      const querySnapshot = await getDocs(collection(db, "produse"));
-      const productList = document.getElementById("productList");
-
-      querySnapshot.forEach((doc) => {
-        const p = doc.data();
-        const li = document.createElement("li");
-        li.innerHTML = `
-          <strong>${p.nume}</strong><br>
-          <em>${p.descriere}</em><br>
-          <span>Preț: ${p.pret} RON</span><br>
-          <span>Stoc: ${p.stoc} BUC</span><br>
-          <img src="${p.imagine}" alt="${p.nume}"><br>
-          <button onclick='addToCart(${JSON.stringify(p)})'>Adaugă în coș</button><br><hr>
-        `;
-        productList.appendChild(li);
-      });
-    }
-
-    window.addToCart = function (produs) {
-      cart.push(produs);
-      updateCartView();
-    };
-
-    function updateCartView() {
-      const cartItems = document.getElementById("cartItems");
-      const cartCount = document.getElementById("cartCount");
-      cartItems.innerHTML = "";
-      cart.forEach((item, index) => {
-        const li = document.createElement("li");
-        li.textContent = `${item.nume} - ${item.pret} RON`;
-        cartItems.appendChild(li);
-      });
-      cartCount.textContent = cart.length;
-    }
-
-    window.toggleCart = function () {
-      const cartBox = document.getElementById("cart");
-      cartBox.style.display = cartBox.style.display === "none" ? "block" : "none";
-    };
-
-    window.checkout = async function () {
-      const email = prompt("Introdu emailul tău:");
-      const telefon = prompt("Introdu numărul de telefon:");
-      if (!email || !telefon || cart.length === 0) {
-        alert("Completează toate câmpurile și adaugă produse în coș!");
-        return;
+      try {
+        // Show loading indicator
+        document.getElementById('loadingIndicator').style.display = 'flex';
+        
+        // Get products from Firestore
+        const querySnapshot = await getDocs(collection(db, "produse"));
+        const products = [];
+        
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          products.push({
+            id: doc.id,
+            nume: data.nume,
+            descriere: data.descriere,
+            pret: data.pret,
+            stoc: data.stoc,
+            imagine: data.imagine,
+            categorie: data.categorie || categorizeProduse(data.nume)
+          });
+        });
+        
+        window.allProducts = products;
+        
+        // Organize products by category
+        displayProductsByCategory(products);
+        
+        // Hide loading indicator
+        document.getElementById('loadingIndicator').style.display = 'none';
+      } catch (error) {
+        console.error("Error loading products:", error);
+        showNotification("Eroare la încărcarea produselor. Încearcă din nou.", "error");
+        document.getElementById('loadingIndicator').style.display = 'none';
       }
-      await addDoc(collection(db, "comenzi"), {
-        email,
-        telefon,
-        produse: cart,
-        data: new Date().toISOString()
+    }
+
+    // Function to categorize products based on their name if no category exists
+    function categorizeProduse(nume) {
+      const numeLower = nume.toLowerCase();
+      
+      if (numeLower.includes('ceas') || numeLower.includes('bratara') || numeLower.includes('lant') || 
+          numeLower.includes('inel') || numeLower.includes('cercei')) {
+        return 'Ceasuri si accesorii';
+      } else if (numeLower.includes('minge') || numeLower.includes('tenis') || numeLower.includes('sport') || 
+                numeLower.includes('fitness') || numeLower.includes('bicicleta')) {
+        return 'Articole Sportive';
+      } else if (numeLower.includes('haina') || numeLower.includes('pantalon') || numeLower.includes('bluza') || 
+                numeLower.includes('rochie') || numeLower.includes('tricou')) {
+        return 'Fashion';
+      } else if (numeLower.includes('telefon') || numeLower.includes('calculator') || numeLower.includes('laptop') || 
+                numeLower.includes('tableta') || numeLower.includes('camera')) {
+        return 'Gadgeturi';
+      } else {
+        return 'Comoditati';
+      }
+    }
+
+    // Display products organized by category
+    function displayProductsByCategory(products) {
+      const productCategories = document.getElementById('productCategories');
+      productCategories.innerHTML = '';
+      
+      // Group products by category
+      const categories = {
+        'Ceasuri si accesorii': [],
+        'Articole Sportive': [],
+        'Fashion': [],
+        'Gadgeturi': [],
+        'Comoditati': []
+      };
+      
+      products.forEach(product => {
+        if (categories[product.categorie]) {
+          categories[product.categorie].push(product);
+        } else {
+          // Default category if missing
+          categories['Comoditati'].push(product);
+        }
       });
-      alert("Comanda a fost trimisă cu succes!");
-      cart.length = 0;
-      updateCartView();
-      toggleCart();
+      
+      // Create section for each category
+      for (const [category, categoryProducts] of Object.entries(categories)) {
+        if (categoryProducts.length === 0) continue;
+        
+        const section = document.createElement('section');
+        section.id = category.replace(/\s+/g, '-').toLowerCase();
+        section.className = 'section';
+        
+        const heading = document.createElement('h2');
+        heading.textContent = category;
+        section.appendChild(heading);
+        
+        const productGrid = document.createElement('div');
+        productGrid.className = 'product-grid';
+        
+        // Create product cards
+        categoryProducts.forEach(product => {
+          const productCard = createProductCard(product);
+          productGrid.appendChild(productCard);
+        });
+        
+        section.appendChild(productGrid);
+        productCategories.appendChild(section);
+      }
+    }
+
+    // Create a product card
+    function createProductCard(product) {
+      const card = document.createElement('div');
+      card.className = 'product-card';
+      card.dataset.productName = product.nume.toLowerCase();
+      card.dataset.category = product.categorie;
+      
+      const productImage = document.createElement('img');
+      productImage.src = product.imagine;
+      productImage.alt = product.nume;
+      productImage.className = 'product-image';
+      
+      const productName = document.createElement('div');
+      productName.className = 'product-name';
+      productName.textContent = product.nume;
+      
+      const productDescription = document.createElement('div');
+      productDescription.className = 'product-description';
+      productDescription.textContent = product.descriere;
+      
+      const productPrice = document.createElement('div');
+      productPrice.className = 'product-price';
+      productPrice.textContent = `${product.pret} RON`;
+      
+      const productStock = document.createElement('div');
+      productStock.className = 'product-stock';
+      productStock.textContent = `Stoc disponibil: ${product.stoc} buc`;
+      
+      const addToCartBtn = document.createElement('button');
+      addToCartBtn.className = 'add-to-cart';
+      addToCartBtn.innerHTML = '<i class="fas fa-cart-plus"></i> Adaugă în coș';
+      
+      addToCartBtn.addEventListener('click', () => {
+        window.addToCart(product);
+      });
+      
+      card.appendChild(productImage);
+      card.appendChild(productName);
+      card.appendChild(productDescription);
+      card.appendChild(productPrice);
+      card.appendChild(productStock);
+      card.appendChild(addToCartBtn);
+      
+      return card;
+    }
+
+    // Initialize the page
+    window.addEventListener('DOMContentLoaded', () => {
+      loadProducts();
+      
+      // Category button event listeners
+      document.querySelectorAll('.category-button').forEach(button => {
+        button.addEventListener('click', (e) => {
+          const category = e.target.dataset.category;
+          
+          // Update active button
+          document.querySelectorAll('.category-button').forEach(btn => {
+            btn.classList.remove('active');
+          });
+          e.target.classList.add('active');
+          
+          // Update category filter dropdown to match
+          document.getElementById('categoryFilter').value = category;
+          
+          // Filter products
+          filterByCategory(category);
+          
+          // Scroll to section if it's a specific category
+          if (category !== 'all') {
+            const sectionId = category.replace(/\s+/g, '-').toLowerCase();
+            const section = document.getElementById(sectionId);
+            if (section) {
+              section.scrollIntoView({ behavior: 'smooth' });
+            }
+          }
+        });
+      });
+      
+      // Setup checkout button
+      document.getElementById('checkoutBtn').addEventListener('click', showCheckoutConfirmation);
+    });
+
+    // Export Firebase functions to window for use in global scope
+    window.db = db;
+    window.saveOrderToFirebase = async function(order) {
+      try {
+        const docRef = await addDoc(collection(db, "comenzi"), order);
+        return docRef.id;
+      } catch (error) {
+        console.error("Error adding order:", error);
+        throw error;
+      }
     };
 
-    window.onload = loadProducts;
+    // Make the loadProducts function available globally
+    window.loadProductsFromFirebase = loadProducts;
   </script>
 
+  <!-- Main Application Logic -->
+  <script>
+    // Cart functions
+    function addToCart(product) {
+      const existingItem = cart.find(item => item.id === product.id);
+      
+      if (existingItem) {
+        existingItem.quantity += 1;
+      } else {
+        cart.push({
+          id: product.id,
+          nume: product.nume,
+          pret: product.pret,
+          imagine: product.imagine,
+          quantity: 1
+        });
+      }
+      
+      updateCartView();
+      showNotification(`${product.nume} a fost adăugat în coș.`, "success");
+      
+      // Save cart to localStorage
+      saveCartToLocalStorage();
+    }
+
+    function updateCartItemQuantity(productId, newQuantity) {
+      const item = cart.find(item => item.id === productId);
+      
+      if (item) {
+        if (newQuantity <= 0) {
+          removeCartItem(productId);
+        } else {
+          item.quantity = newQuantity;
+          updateCartView();
+          saveCartToLocalStorage();
+        }
+      }
+    }
+
+    function removeCartItem(productId) {
+      cart = cart.filter(item => item.id !== productId);
+      updateCartView();
+      showNotification("Produsul a fost eliminat din coș.", "info");
+      
+      // Save cart to localStorage
+      saveCartToLocalStorage();
+    }
+
+    function clearCart() {
+      if (cart.length === 0) return;
+      
+      cart = [];
+      updateCartView();
+      showNotification("Coșul a fost golit.", "info");
+      
+      // Save cart to localStorage
+      saveCartToLocalStorage();
+    }
+
+    function calculateCartTotal() {
+      return cart.reduce((total, item) => total + (item.pret * item.quantity), 0).toFixed(2);
+    }
+
+    function updateCartView() {
+      const cartItems = document.getElementById('cartItems');
+      const cartCount = document.getElementById('cartCount');
+      const cartTotal = document.getElementById('cartTotal');
+      
+      cartItems.innerHTML = '';
+      
+      if (cart.length === 0) {
+        cartItems.innerHTML = '<p>Coșul tău este gol.</p>';
+        document.getElementById('paypal-button-container').style.display = 'none';
+      } else {
+        cart.forEach(item => {
+          const cartItem = document.createElement('div');
+          cartItem.className = 'cart-item';
+          
+          const itemInfo = document.createElement('div');
+          itemInfo.className = 'cart-item-info';
+          
+          const itemTitle = document.createElement('div');
+          itemTitle.className = 'cart-item-title';
+          itemTitle.textContent = item.nume;
+          
+          const itemPrice = document.createElement('div');
+          itemPrice.className = 'cart-item-price';
+          itemPrice.textContent = `${(item.pret * item.quantity).toFixed(2)} RON`;
+          
+          itemInfo.appendChild(itemTitle);
+          itemInfo.appendChild(itemPrice);
+          
+          const itemControls = document.createElement('div');
+          itemControls.className = 'cart-item-controls';
+          
+          const decreaseBtn = document.createElement('button');
+          decreaseBtn.className = 'quantity-control';
+          decreaseBtn.innerHTML = '<i class="fas fa-minus"></i>';
+          decreaseBtn.onclick = () => updateCartItemQuantity(item.id, item.quantity - 1);
+          
+          const quantityInput = document.createElement('input');
+          quantityInput.type = 'text';
+          quantityInput.className = 'cart-quantity';
+          quantityInput.value = item.quantity;
+          quantityInput.onchange = (e) => {
+            const newQty = parseInt(e.target.value);
+            if (!isNaN(newQty)) {
+              updateCartItemQuantity(item.id, newQty);
+            }
+          };
+          
+          const increaseBtn = document.createElement('button');
+          increaseBtn.className = 'quantity-control';
+          increaseBtn.innerHTML = '<i class="fas fa-plus"></i>';
+          increaseBtn.onclick = () => updateCartItemQuantity(item.id, item.quantity + 1);
+          
+          const removeBtn = document.createElement('button');
+          removeBtn.className = 'remove-item';
+          removeBtn.innerHTML = '<i class="fas fa-trash"></i>';
+          removeBtn.onclick = () => removeCartItem(item.id);
+          
+          itemControls.appendChild(decreaseBtn);
+          itemControls.appendChild(quantityInput);
+          itemControls.appendChild(increaseBtn);
+          itemControls.appendChild(removeBtn);
+          
+          cartItem.appendChild(itemInfo);
+          cartItem.appendChild(itemControls);
+          
+          cartItems.appendChild(cartItem);
+        });
+        
+        // Show PayPal button if there are items in cart
+        document.getElementById('paypal-button-container').style.display = 'block';
+      }
+      
+      const total = calculateCartTotal();
+      cartCount.textContent = cart.reduce((count, item) => count + item.quantity, 0);
+      cartTotal.textContent = total;
+      
+      // Update confirmation total as well
+      document.getElementById('confirmTotal').textContent = total;
+      
+      // Update PayPal button if it exists
+      if (typeof refreshPayPalButton === 'function') {
+        refreshPayPalButton();
+      }
+    }
+
+    // Search and Filter functions
+    function searchProducts() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const categoryFilter = document.getElementById('categoryFilter').value;
+      
+      // Get all product cards
+      const productCards = document.querySelectorAll('.product-card');
+      
+      productCards.forEach(card => {
+        const productName = card.dataset.productName;
+        const productCategory = card.dataset.category;
+        
+        // Improved search functionality - matches partial word input
+        const matchesSearch = productName.includes(searchTerm);
+        
+        // Category filter check
+        const matchesCategory = categoryFilter === 'all' || productCategory === categoryFilter;
+        
+        // Show/hide based on filters
+        if (matchesSearch && matchesCategory) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+      
+      // Check if any products are visible in each section and hide sections without visible products
+      document.querySelectorAll('.section').forEach(section => {
+        const visibleProducts = section.querySelectorAll('.product-card[style="display: flex"]').length;
+        section.style.display = visibleProducts > 0 ? 'block' : 'none';
+      });
+      
+      // Show message if no products match
+      const anyVisible = document.querySelectorAll('.product-card[style="display: flex"]').length > 0;
+      
+      if (!anyVisible) {
+        // Check if "no products" message already exists
+        let noProductsMsg = document.querySelector('.no-products');
+        
+        if (!noProductsMsg) {
+          noProductsMsg = document.createElement('div');
+          noProductsMsg.className = 'no-products';
+          noProductsMsg.innerHTML = `
+            <i class="fas fa-search" style="font-size: 2rem; margin-bottom: 15px;"></i>
+            <h3>Nu a fost găsit niciun produs</h3>
+            <p>Încearcă să modifici termenii de căutare sau filtrele aplicate.</p>
+          `;
+          document.getElementById('productCategories').appendChild(noProductsMsg);
+        }
+      } else {
+        // Remove "no products" message if it exists
+        const noProductsMsg = document.querySelector('.no-products');
+        if (noProductsMsg) {
+          noProductsMsg.remove();
+        }
+      }
+    }
+
+    function filterByCategory(category = null) {
+      if (!category) {
+        category = document.getElementById('categoryFilter').value;
+      }
+      
+      // If using the dropdown, update the active button
+      if (category) {
+        document.querySelectorAll('.category-button').forEach(btn => {
+          btn.classList.remove('active');
+          if (btn.dataset.category === category) {
+            btn.classList.add('active');
+          }
+        });
+      }
+      
+      if (category === 'all') {
+        // Show all sections
+        document.querySelectorAll('.section').forEach(section => {
+          section.style.display = 'block';
+        });
+        
+        // Show all product cards
+        document.querySelectorAll('.product-card').forEach(card => {
+          card.style.display = 'flex';
+        });
+      } else {
+        // Show only the selected category
+        document.querySelectorAll('.section').forEach(section => {
+          if (section.id === category.replace(/\s+/g, '-').toLowerCase()) {
+            section.style.display = 'block';
+          } else {
+            section.style.display = 'none';
+          }
+        });
+        
+        // Show only products from the selected category
+        document.querySelectorAll('.product-card').forEach(card => {
+          if (card.dataset.category === category) {
+            card.style.display = 'flex';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      }
+      
+      // If search term is active, apply search filter as well
+      const searchTerm = document.getElementById('searchInput').value;
+      if (searchTerm) {
+        searchProducts();
+      }
+    }
+
+    // Cart toggle
+    function toggleCart() {
+      const cartElement = document.getElementById('cart');
+      cartElement.style.display = cartElement.style.display === 'block' ? 'none' : 'block';
+    }
+
+    // Checkout functions
+    function showCheckoutConfirmation() {
+      if (cart.length === 0) {
+        showNotification("Coșul tău este gol. Adaugă produse înainte de a trimite comanda.", "error");
+        return;
+      }
+      
+      document.getElementById('confirmationOverlay').style.display = 'flex';
+    }
+
+    function closeConfirmation() {
+      document.getElementById('confirmationOverlay').style.display = 'none';
+    }
+
+    async function proceedToCheckout() {
+      if (cart.length === 0) return;
+      
+      try {
+        // Get customer information
+        const email = prompt("Introdu emailul tău:");
+        const telefon = prompt("Introdu numărul de telefon:");
+        
+        if (!email || !telefon) {
+          showNotification("Te rugăm să completezi toate informațiile pentru a continua.", "error");
+          return;
+        }
+        
+        const orderData = {
+          email,
+          telefon,
+          produse: cart,
+          total: calculateCartTotal(),
+          data: new Date().toISOString()
+        };
+        
+        // Save to Firebase
+        await window.saveOrderToFirebase(orderData);
+        
+        showNotification("Comanda a fost trimisă cu succes! Te vom contacta în curând.", "success");
+        
+        // Clear cart after successful order
+        clearCart();
+        closeConfirmation();
+        toggleCart(); // Hide cart
+      } catch (error) {
+        console.error("Error processing checkout:", error);
+        showNotification("A apărut o eroare la trimiterea comenzii. Te rugăm să încerci din nou.", "error");
+      }
+    }
+
+    // Notification functions
+    function showNotification(message, type = "info") {
+      const notificationContainer = document.getElementById('notificationContainer');
+      
+      const notification = document.createElement('div');
+      notification.className = 'notification';
+      notification.textContent = message;
+      
+      // Add colors based on type
+      if (type === "success") {
+        notification.style.borderLeft = "4px solid #4CAF50";
+      } else if (type === "error") {
+        notification.style.borderLeft = "4px solid #ff3333";
+      } else if (type === "info") {
+        notification.style.borderLeft = "4px solid #00aaff";
+      }
+      
+      notificationContainer.appendChild(notification);
+      
+      // Make notification visible
+      setTimeout(() => {
+        notification.style.opacity = 1;
+      }, 10);
+      
+      // Remove notification after 3 seconds
+      setTimeout(() => {
+        notification.style.opacity = 0;
+        setTimeout(() => {
+          notificationContainer.removeChild(notification);
+        }, 300);
+      }, 3000);
+    }
+
+    // Local Storage functions
+    function saveCartToLocalStorage() {
+      localStorage.setItem('cart', JSON.stringify(cart));
+    }
+
+    function loadCartFromLocalStorage() {
+      const savedCart = localStorage.getItem('cart');
+      if (savedCart) {
+        cart = JSON.parse(savedCart);
+        updateCartView();
+      }
+    }
+
+    // Initialize when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      // Load saved cart from localStorage
+      loadCartFromLocalStorage();
+    });
+  </script>
+
+  <!-- PayPal Integration -->
+  <script src="https://www.paypal.com/sdk/js?client-id=AcK3ErVHMgXz2QdOLmAsFdaF2H6YaAwh7kPcF4FgbC8Jnpoa4ieSMFafoDUTl_YnHnvlTdnztwwVc8Ku&currency=RON"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      initPayPal();
+    });
+
+    function initPayPal() {
+      if (window.paypal) {
+        renderPayPalButton();
+      }
+    }
+
+    function renderPayPalButton() {
+      const paypalButtonContainer = document.getElementById('paypal-button-container');
+      if (!paypalButtonContainer) return;
+      
+      // Clear any existing buttons
+      paypalButtonContainer.innerHTML = '';
+      
+      // Render the PayPal button
+      paypal.Buttons({
+        style: {
+          layout: 'vertical',
+          color: 'blue',
+          shape: 'rect',
+          label: 'pay'
+        },
+        
+        createOrder: function(data, actions) {
+          // Calculate total in cart
+          const total = calculateCartTotal();
+          
+          // Create order with current cart
+          return actions.order.create({
+            purchase_units: [{
+              amount: {
+                currency_code: 'RON',
+                value: total
+              },
+              description: 'Comandă ILIENI-INVEST'
+            }]
+          });
+        },
+        
+        onApprove: function(data, actions) {
+          return actions.order.capture().then(function(orderData) {
+            const email = prompt("Introdu emailul tău pentru finalizarea comenzii:");
+            const telefon = prompt("Introdu numărul de telefon pentru livrare:");
+            
+            if (!email || !telefon) {
+              showNotification("Te rugăm să completezi toate informațiile pentru a finaliza comanda.", "error");
+              return;
+            }
+            
+            // Create order data
+            const orderInfo = {
+              email,
+              telefon,
+              produse: cart,
+              total: calculateCartTotal(),
+              data: new Date().toISOString(),
+              paymentId: orderData.id,
+              paymentStatus: orderData.status,
+              paymentMethod: 'PayPal'
+            };
+            
+            // Save to Firebase
+            window.saveOrderToFirebase(orderInfo)
+              .then(() => {
+                showNotification("Plata a fost procesată cu succes! Comanda ta a fost înregistrată.", "success");
+                clearCart();
+                toggleCart();
+              })
+              .catch(error => {
+                console.error("Error saving order:", error);
+                showNotification("Plata a fost procesată, dar a apărut o eroare la salvarea comenzii. Te vom contacta în curând.", "error");
+              });
+          });
+        },
+        
+        onError: function(err) {
+          console.error('PayPal Error:', err);
+          showNotification("A apărut o eroare la procesarea plății. Te rugăm să încerci din nou sau să alegi altă metodă de plată.", "error");
+        }
+      }).render('#paypal-button-container');
+    }
+
+    // Function to refresh PayPal button when cart changes
+    function refreshPayPalButton() {
+      if (cart.length > 0) {
+        renderPayPalButton();
+      }
+    }
+  </script>
 </body>
 </html>
