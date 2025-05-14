@@ -47,6 +47,30 @@
       max-width: 150px;
       margin-top: 5px;
     }
+
+    .produs-container {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .disponibilitate {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    button {
+      padding: 10px;
+      margin-top: 10px;
+      border: none;
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
   </style>
 </head>
 <body>
@@ -93,14 +117,27 @@
       querySnapshot.forEach((doc) => {
         const p = doc.data();
         const li = document.createElement("li");
+
+        li.classList.add("produs-container");
         li.innerHTML = `
           <strong>${p.nume}</strong><br>
           <em>${p.descriere}</em><br>
           <span>Preț: ${p.pret} RON</span><br>
-          <img src="${p.imagine}" alt="${p.nume}"><br><hr>
+          <img src="${p.imagine}" alt="${p.nume}"><br>
+          <div class="disponibilitate">Disponibilitate: ${p.disponibilitate} bucăți</div><br>
+          <button onclick="placeOrder('${p.nume}', ${p.disponibilitate})">Plasează comandă</button><hr>
         `;
         productList.appendChild(li);
       });
+    }
+
+    // Funcția de plasare a comenzii
+    function placeOrder(productName, availableStock) {
+      if (availableStock > 0) {
+        alert(`Comanda pentru produsul "${productName}" a fost plasată!`);
+      } else {
+        alert(`Îmi pare rău, produsul "${productName}" nu mai este disponibil.`);
+      }
     }
 
     // Apelează funcția pentru a încărca produsele la încărcarea paginii
