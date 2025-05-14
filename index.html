@@ -19,73 +19,59 @@
       text-align: center;
       text-shadow: 1px 1px 3px black;
     }
-
     h1 {
       padding-top: 50px;
     }
-
-    input[type="text"] {
+    input[type="text"], input[type="email"], input[type="tel"], input[type="number"] {
       padding: 8px;
       width: 90%;
       max-width: 400px;
-      margin-top: 20px;
+      margin-top: 10px;
       border: none;
       border-radius: 5px;
     }
-
     ul {
       padding: 0;
       margin-top: 20px;
       list-style: none;
     }
-
     li {
-      margin: 10px 0;
+      margin: 20px auto;
+      background: rgba(0, 0, 0, 0.5);
+      width: 90%;
+      max-width: 500px;
+      padding: 20px;
+      border-radius: 10px;
     }
-
     img {
       max-width: 150px;
       margin-top: 5px;
     }
-
-    .produs-container {
-      margin-bottom: 20px;
-      text-align: left;
-    }
-
-    .disponibilitate {
-      font-weight: bold;
-      margin-top: 10px;
-    }
-
     button {
-      padding: 10px;
       margin-top: 10px;
-      border: none;
-      background-color: #4CAF50;
+      padding: 8px 16px;
+      background-color: #28a745;
       color: white;
-      cursor: pointer;
+      border: none;
       border-radius: 5px;
+      cursor: pointer;
     }
-
-    button:hover {
-      background-color: #45a049;
+    form {
+      margin-top: 10px;
+      display: none;
     }
   </style>
 </head>
 <body>
 
   <h1>Bun venit la ILIENI-INVEST!</h1>
-
-  <!-- Căutare produse -->
   <input type="text" id="searchInput" onkeyup="searchProducts()" placeholder="Căutare produs...">
   <ul id="productList"></ul>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    // Configurare Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyByP5ViWW4msYRqketugoVtPSUbu-Ykhts",
       authDomain: "ilieni-invest.firebaseapp.com",
@@ -96,11 +82,9 @@
       measurementId: "G-2XBHW5934G"
     };
 
-    // Initializează Firebase
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Funcția de căutare produse
     function searchProducts() {
       const input = document.getElementById("searchInput").value.toLowerCase();
       const items = document.querySelectorAll("#productList li");
@@ -109,7 +93,6 @@
       });
     }
 
-    // Funcția care obține produsele din Firestore
     async function loadProducts() {
       const querySnapshot = await getDocs(collection(db, "produse"));
       const productList = document.getElementById("productList");
@@ -118,32 +101,57 @@
         const p = doc.data();
         const li = document.createElement("li");
 
-        li.classList.add("produs-container");
         li.innerHTML = `
           <strong>${p.nume}</strong><br>
           <em>${p.descriere}</em><br>
           <span>Preț: ${p.pret} RON</span><br>
+          <span>În stoc: ${p.stoc || "N/A"} buc</span><br>
           <img src="${p.imagine}" alt="${p.nume}"><br>
-          <div class="disponibilitate">Disponibilitate: ${p.disponibilitate} bucăți</div><br>
-          <button onclick="placeOrder('${p.nume}', ${p.disponibilitate})">Plasează comandă</button><hr>
+          <button onclick="toggleForm(this)">Plasează comandă</button>
+          <form onsubmit="submitOrder(event, '${p.nume}', ${p.pret})">
+            <input type="text" name="nume" placeholder="Numele tău" required><br>
+            <input type="email" name="email" placeholder="Email" required><br>
+            <input type="tel" name="telefon" placeholder="Telefon" required><br>
+            <input type="number" name="cantitate" placeholder="Cantitate" min="1" required><br>
+            <button type="submit">Trimite</button>
+          </form>
+          <hr>
         `;
         productList.appendChild(li);
       });
     }
 
-    // Funcția de plasare a comenzii
-    function placeOrder(productName, availableStock) {
-      if (availableStock > 0) {
-        alert(`Comanda pentru produsul "${productName}" a fost plasată!`);
-      } else {
-        alert(`Îmi pare rău, produsul "${productName}" nu mai este disponibil.`);
+    window.toggleForm = function(button) {
+      const form = button.nextElementSibling;
+      form.style.display = form.style.display === "none" || form.style.display === "" ? "block" : "none";
+    }
+
+    window.submitOrder = async function(event, produs, pret) {
+      event.preventDefault();
+      const form = event.target;
+      const data = {
+        produs,
+        pret,
+        nume: form.nume.value,
+        email: form.email.value,
+        telefon: form.telefon.value,
+        cantitate: parseInt(form.cantitate.value),
+        data: new Date().toISOString()
+      };
+
+      try {
+        await addDoc(collection(db, "comenzi"), data);
+        alert("Comandă trimisă cu succes!");
+        form.reset();
+        form.style.display = "none";
+      } catch (error) {
+        console.error("Eroare la trimiterea comenzii:", error);
+        alert("A apărut o eroare. Încearcă din nou.");
       }
     }
 
-    // Apelează funcția pentru a încărca produsele la încărcarea paginii
     window.onload = loadProducts;
   </script>
 
 </body>
 </html>
-
