@@ -19,52 +19,86 @@
       text-align: center;
       text-shadow: 1px 1px 3px black;
     }
+
     h1 {
       padding-top: 50px;
     }
-    input[type="text"], input[type="email"], input[type="tel"], input[type="number"] {
+
+    #cartIcon {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background-color: #fff;
+      color: #000;
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 1000;
+    }
+
+    #cart {
+      position: fixed;
+      top: 50px;
+      right: 10px;
+      width: 300px;
+      background-color: rgba(0, 0, 0, 0.9);
+      padding: 20px;
+      border-radius: 10px;
+      display: none;
+      z-index: 1000;
+      text-align: left;
+    }
+
+    input[type="text"] {
       padding: 8px;
       width: 90%;
       max-width: 400px;
-      margin-top: 10px;
+      margin-top: 20px;
       border: none;
       border-radius: 5px;
     }
+
     ul {
       padding: 0;
       margin-top: 20px;
       list-style: none;
     }
+
     li {
-      margin: 20px auto;
-      background: rgba(0, 0, 0, 0.5);
-      width: 90%;
-      max-width: 500px;
-      padding: 20px;
-      border-radius: 10px;
+      margin: 10px 0;
     }
+
     img {
       max-width: 150px;
       margin-top: 5px;
     }
+
     button {
-      margin-top: 10px;
-      padding: 8px 16px;
-      background-color: #28a745;
-      color: white;
+      margin-top: 5px;
+      padding: 5px 10px;
       border: none;
       border-radius: 5px;
+      background-color: #00aaff;
+      color: white;
       cursor: pointer;
     }
-    form {
-      margin-top: 10px;
-      display: none;
+
+    button:hover {
+      background-color: #0088cc;
     }
   </style>
 </head>
 <body>
 
   <h1>Bun venit la ILIENI-INVEST!</h1>
+
+  <div id="cartIcon" onclick="toggleCart()">🛒 Coș (<span id="cartCount">0</span>)</div>
+  <div id="cart">
+    <h3>Coș de cumpărături</h3>
+    <ul id="cartItems"></ul>
+    <button onclick="checkout()">Trimite comanda</button>
+  </div>
+
   <input type="text" id="searchInput" onkeyup="searchProducts()" placeholder="Căutare produs...">
   <ul id="productList"></ul>
 
@@ -85,6 +119,8 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    const cart = [];
+
     function searchProducts() {
       const input = document.getElementById("searchInput").value.toLowerCase();
       const items = document.querySelectorAll("#productList li");
@@ -100,55 +136,57 @@
       querySnapshot.forEach((doc) => {
         const p = doc.data();
         const li = document.createElement("li");
-
         li.innerHTML = `
           <strong>${p.nume}</strong><br>
           <em>${p.descriere}</em><br>
           <span>Preț: ${p.pret} RON</span><br>
-          <span>În stoc: ${p.stoc || "N/A"} buc</span><br>
           <img src="${p.imagine}" alt="${p.nume}"><br>
-          <button onclick="toggleForm(this)">Plasează comandă</button>
-          <form onsubmit="submitOrder(event, '${p.nume}', ${p.pret})">
-            <input type="text" name="nume" placeholder="Numele tău" required><br>
-            <input type="email" name="email" placeholder="Email" required><br>
-            <input type="tel" name="telefon" placeholder="Telefon" required><br>
-            <input type="number" name="cantitate" placeholder="Cantitate" min="1" required><br>
-            <button type="submit">Trimite</button>
-          </form>
-          <hr>
+          <button onclick='addToCart(${JSON.stringify(p)})'>Adaugă în coș</button><br><hr>
         `;
         productList.appendChild(li);
       });
     }
 
-    window.toggleForm = function(button) {
-      const form = button.nextElementSibling;
-      form.style.display = form.style.display === "none" || form.style.display === "" ? "block" : "none";
+    window.addToCart = function (produs) {
+      cart.push(produs);
+      updateCartView();
+    };
+
+    function updateCartView() {
+      const cartItems = document.getElementById("cartItems");
+      const cartCount = document.getElementById("cartCount");
+      cartItems.innerHTML = "";
+      cart.forEach((item, index) => {
+        const li = document.createElement("li");
+        li.textContent = `${item.nume} - ${item.pret} RON`;
+        cartItems.appendChild(li);
+      });
+      cartCount.textContent = cart.length;
     }
 
-    window.submitOrder = async function(event, produs, pret) {
-      event.preventDefault();
-      const form = event.target;
-      const data = {
-        produs,
-        pret,
-        nume: form.nume.value,
-        email: form.email.value,
-        telefon: form.telefon.value,
-        cantitate: parseInt(form.cantitate.value),
-        data: new Date().toISOString()
-      };
+    window.toggleCart = function () {
+      const cartBox = document.getElementById("cart");
+      cartBox.style.display = cartBox.style.display === "none" ? "block" : "none";
+    };
 
-      try {
-        await addDoc(collection(db, "comenzi"), data);
-        alert("Comandă trimisă cu succes!");
-        form.reset();
-        form.style.display = "none";
-      } catch (error) {
-        console.error("Eroare la trimiterea comenzii:", error);
-        alert("A apărut o eroare. Încearcă din nou.");
+    window.checkout = async function () {
+      const email = prompt("Introdu emailul tău:");
+      const telefon = prompt("Introdu numărul de telefon:");
+      if (!email || !telefon || cart.length === 0) {
+        alert("Completează toate câmpurile și adaugă produse în coș!");
+        return;
       }
-    }
+      await addDoc(collection(db, "comenzi"), {
+        email,
+        telefon,
+        produse: cart,
+        data: new Date().toISOString()
+      });
+      alert("Comanda a fost trimisă cu succes!");
+      cart.length = 0;
+      updateCartView();
+      toggleCart();
+    };
 
     window.onload = loadProducts;
   </script>
