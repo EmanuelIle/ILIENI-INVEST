@@ -48,7 +48,6 @@
       margin-top: 5px;
     }
   </style>
-  <link rel="icon" href="data:,">
 </head>
 <body>
 
@@ -58,8 +57,26 @@
   <input type="text" id="searchInput" onkeyup="searchProducts()" placeholder="Căutare produs...">
   <ul id="productList"></ul>
 
-  <script>
-    // Căutare în lista de produse
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    // Configurare Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyByP5ViWW4msYRqketugoVtPSUbu-Ykhts",
+      authDomain: "ilieni-invest.firebaseapp.com",
+      projectId: "ilieni-invest",
+      storageBucket: "ilieni-invest.appspot.com",
+      messagingSenderId: "1083438978721",
+      appId: "1:1083438978721:web:fa4c2aaf6cd53286e302e0",
+      measurementId: "G-2XBHW5934G"
+    };
+
+    // Initializează Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Funcția de căutare produse
     function searchProducts() {
       const input = document.getElementById("searchInput").value.toLowerCase();
       const items = document.querySelectorAll("#productList li");
@@ -68,29 +85,28 @@
       });
     }
 
-    // Exemplu de produse (înlocuiești cu Firebase mai târziu)
-    const produse = [
-      {
-        nume: "Produs Test",
-        descriere: "Descriere exemplu",
-        pret: "120 RON",
-        imagine: "https://via.placeholder.com/150"
-      }
-    ];
+    // Funcția care obține produsele din Firestore
+    async function loadProducts() {
+      const querySnapshot = await getDocs(collection(db, "produse"));
+      const productList = document.getElementById("productList");
 
-    const productList = document.getElementById("productList");
+      querySnapshot.forEach((doc) => {
+        const p = doc.data();
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <strong>${p.nume}</strong><br>
+          <em>${p.descriere}</em><br>
+          <span>Preț: ${p.pret} RON</span><br>
+          <img src="${p.imagine}" alt="${p.nume}"><br><hr>
+        `;
+        productList.appendChild(li);
+      });
+    }
 
-    produse.forEach(p => {
-      const li = document.createElement("li");
-      li.innerHTML = `
-        <strong>${p.nume}</strong><br>
-        <em>${p.descriere}</em><br>
-        <span>Preț: ${p.pret}</span><br>
-        <img src="${p.imagine}" alt="${p.nume}"><br><hr>
-      `;
-      productList.appendChild(li);
-    });
+    // Apelează funcția pentru a încărca produsele la încărcarea paginii
+    window.onload = loadProducts;
   </script>
 
 </body>
 </html>
+
