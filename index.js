@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ILIENI-INVEST</title>
+    <style>
+        body {
+            margin: 0 !important;
+            padding: 0;
+            background-image: url('https://emanuelile.github.io/ILIENI-INVEST/fundal.webp');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            color: white;
+            text-align: center;
+            text-shadow: 1px 1px 3px black;
+        }
+
+        h1 {
+            padding-top: 50px;
+        }
+
+        input[type="text"], input[type="email"], input[type="password"] {
+            padding: 8px;
+            width: 100%;
+            max-width: 400px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .auth-form {
+            padding: 30px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            display: inline-block;
+            margin-top: 50px;
+        }
+
+        .auth-form h3 {
+            margin-bottom: 20px;
+        }
+
+        ul {
+            padding: 0;
+            margin-top: 20px;
+            list-style: none;
+        }
+
+      li {
+    list-style: none;
+    margin: 5px 0;
+}
+        }
+    </style>
+    <link rel="icon" href="data:,">
+</head>
+<body>
+    <h1>Bun venit la ILIENI-INVEST!</h1>
+
+    <!-- Căutare produse -->
+    <input type="text" id="searchInput" onkeyup="searchProducts()" placeholder="Căutare produs...">
+    <ul id="productList">
+    </ul>
+
+   <!-- Formular de Autentificare / Înregistrare -->
+<div id="authForm" class="auth-form">
+    <h3 id="authTitle">Autentificare</h3>
+    <input type="email" id="email" placeholder="Email" required><br><br>
+    <input type="password" id="password" placeholder="Parolă" required><br><br>
+    <button onclick="handleAuth()">Autentificare</button>
+    <button onclick="toggleAuth()">Crează un cont</button>
+</div>
+
+<!-- Mesaj de bun venit (afișat după autentificare) -->
+<div id="welcomeMessage" style="display: none; font-size: 1.2em; margin-top: 20px;"></div>
+
+<!-- Formular pentru Adăugarea unui produs (afișat după autentificare) -->
+<div id="addProductForm" style="display: none; margin-top: 30px;">
+    <h3>Adaugă produs</h3>
+    <input type="text" id="productName" placeholder="Nume produs"><br><br>
+    <input type="text" id="productDescription" placeholder="Descriere produs"><br><br>
+    <input type="number" id="productPrice" placeholder="Preț produs" step="0.01"><br><br>
+    <input type="file" id="productImage" accept="image/*"><br><br>
+    <button onclick="addProduct()">Adaugă</button>
+</div>
+
+<!-- Listă Produse -->
+
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyByP5ViWW4msYRqketugoVtPSUbu-Ykhts",
+        authDomain: "ilieni-invest.firebaseapp.com",
+        projectId: "ilieni-invest",
+        storageBucket: "ilieni-invest.firebasestorage.app",
+        messagingSenderId: "1083438978721",
+        appId: "1:1083438978721:web:fa4c2aaf6cd53286e302e0",
+        measurementId: "G-2XBHW5934G"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const analytics = getAnalytics(app);
+
+    // Funcția care gestionează autentificarea sau crearea contului
+    function handleAuth() {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        // Dacă autentificarea a reușit
+        if (document.getElementById('authTitle').textContent === "Autentificare") {
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    document.getElementById("authForm").style.display = "none"; // Ascunde formularul de autentificare
+                    document.getElementById("welcomeMessage").textContent = "Bine ai venit, " + user.email + "!";
+                    document.getElementById("welcomeMessage").style.display = "block"; // Afișează mesajul de bun venit
+                    document.getElementById("addProductForm").style.display = "block"; // Afișează formularul de adăugare produs
+                })
+                .catch((error) => {
+                    alert("Eroare la autentificare: " + error.message);
+                });
+        } else {
+            createUserWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    document.getElementById("authForm").style.display = "none"; // Ascunde formularul de autentificare
+                    document.getElementById("welcomeMessage").textContent = "Cont creat! Bine ai venit, " + user.email + "!";
+                    document.getElementById("welcomeMessage").style.display = "block"; // Afișează mesajul de bun venit
+                    document.getElementById("addProductForm").style.display = "block"; // Afișează formularul de adăugare produs
+                })
+                .catch((error) => {
+                    alert("Eroare la înregistrare: " + error.message);
+                });
+        }
+    }
+
+    // Funcția care schimbă între autentificare și înregistrare
+    function toggleAuth() {
+        const title = document.getElementById('authTitle');
+        if (title.textContent === "Autentificare") {
+            title.textContent = "Înregistrare";
+        } else {
+            title.textContent = "Autentificare";
+        }
+    }
+
+    window.handleAuth = handleAuth;
+    window.toggleAuth = toggleAuth;
+
+    // Funcția pentru adăugarea produsului
+    function addProduct() {
+        const name = document.getElementById("productName").value.trim();
+        const description = document.getElementById("productDescription").value.trim();
+        const price = document.getElementById("productPrice").value.trim();
+        const imageInput = document.getElementById("productImage");
+
+        if (!name || !price) {
+            alert("Te rugăm să completezi toate câmpurile obligatorii!");
+            return; // Nu se adaugă produsul dacă numele sau prețul sunt goale
+        }
+
+        const li = document.createElement("li");
+        li.style.display = "block"; // Afișează produsul imediat
+
+        li.innerHTML = `
+            <strong>${name}</strong><br>
+            ${description ? `<em>${description}</em><br>` : ""}
+            ${price ? `<span>Preț: ${price} RON</span><br>` : ""}
+            ${imageInput.files[0] ? `<img src="${URL.createObjectURL(imageInput.files[0])}" alt="${name}" style="max-width: 150px; margin-top: 5px;"><br>` : ""}
+            <hr>
+        `;
+
+        document.getElementById("productList").appendChild(li);
+
+        // Resetare câmpuri
+        document.getElementById("productName").value = "";
+        document.getElementById("productDescription").value = "";
+        document.getElementById("productPrice").value = "";
+        imageInput.value = "";
+    }
+
+    window.addProduct = addProduct; // Asigură-te că funcția e disponibilă global
+
+    // Funcția de căutare produse
+    function searchProducts() {
+        const input = document.getElementById("searchInput").value.toLowerCase();
+        const items = document.querySelectorAll("#productList li");
+
+        items.forEach((li) => {
+            li.style.display = li.textContent.toLowerCase().includes(input) ? "block" : "none";
+        });
+    }
+
+    window.searchProducts = searchProducts; // <- neapărat să expui funcția global
+</script>
+
+</body>
+</html>
