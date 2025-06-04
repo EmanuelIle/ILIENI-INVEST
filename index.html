@@ -97,6 +97,10 @@
       text-align: left;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
     }
+    
+<div class="search-container">
+  <input type="text" id="searchInput" placeholder="Caută produse..." onkeyup="searchProducts()">
+</div>
 
     /* Bare de căutare și filtrare */
     .search-container {
@@ -951,33 +955,28 @@
         refreshPayPalButton();
       }
     }
-
     // Search and Filter functions
-    function searchProducts() {
-      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-      const categoryFilter = document.getElementById('categoryFilter').value;
-      
-      // Get all product cards
-      const productCards = document.querySelectorAll('.product-card');
-      
-      productCards.forEach(card => {
-        const productName = card.dataset.productName;
-        const productCategory = card.dataset.category;
-        
-        // Improved search functionality - matches partial word input
-        const matchesSearch = productName.includes(searchTerm);
-        
-        // Category filter check
-        const matchesCategory = categoryFilter === 'all' || productCategory === categoryFilter;
-        
-        // Show/hide based on filters
-        if (matchesSearch && matchesCategory) {
-          card.style.display = 'flex';
-        } else {
-          card.style.display = 'none';
-        }
-      });
-      
+ function searchProducts() {
+  const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+  const categoryFilter = document.getElementById('categoryFilter').value;
+
+  // Get all product cards
+  const productCards = document.querySelectorAll('.product-card');
+
+  productCards.forEach(card => {
+    const productName = (card.dataset.productName || '').toLowerCase();
+    const productCategory = card.dataset.category || '';
+
+    const matchesSearch = productName.includes(searchTerm);
+    const matchesCategory = categoryFilter === 'all' || productCategory === categoryFilter;
+
+    if (matchesSearch && matchesCategory) {
+      card.style.display = 'flex';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
       // Check if any products are visible in each section and hide sections without visible products
       document.querySelectorAll('.section').forEach(section => {
         const visibleProducts = section.querySelectorAll('.product-card[style="display: flex"]').length;
