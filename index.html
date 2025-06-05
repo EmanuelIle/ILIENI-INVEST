@@ -501,23 +501,31 @@
       <i class="fas fa-shopping-cart"></i> Coș (<span id="cartCount">0</span>)
     </div>
 
-    <!-- Shopping Cart -->
-    <div id="cart">
-      <h3>Coș de cumpărături</h3>
-      <div id="cartItems"></div>
-      <div class="cart-summary">
-        <div class="cart-total">Total: <span id="cartTotal">0</span> RON</div>
-        <div class="cart-buttons">
-          <button class="checkout-btn" id="checkoutBtn">
-            <i class="fas fa-check"></i> Trimite comanda
-          </button>
-          <button class="clear-cart-btn" onclick="clearCart()">
-            <i class="fas fa-trash"></i> Golește
-          </button>
-        </div>
-        <div id="paypal-button-container"></div>
-      </div>
+   <!-- Shopping Cart -->
+<div id="cart">
+  <h3>Coș de cumpărături</h3>
+  <div id="cartItems"></div>
+  <div class="cart-summary">
+    <div class="cart-total">Total: <span id="cartTotal">0</span> RON</div>
+    <div class="cart-buttons">
+      <button class="checkout-btn" id="checkoutBtn">
+        <i class="fas fa-check"></i> Trimite comanda
+      </button>
+      <button class="clear-cart-btn" onclick="clearCart()">
+        <i class="fas fa-trash"></i> Golește
+      </button>
     </div>
+
+    <!-- ✅ GDPR notice -->
+    <p style="font-size: 11px; color: #ccc; margin-top: 8px;">
+      Prin continuarea comenzii, vă oferiți automat consimțământul pentru prelucrarea datelor personale
+      (email și telefon) conform
+      <a href="/politica-confidentialitate.html" target="_blank" style="color: #fff;">Politicii de confidențialitate</a>.
+    </p>
+
+    <div id="paypal-button-container"></div>
+  </div>
+</div>
 
     <!-- Search and Filter -->
     <div class="search-container">
@@ -1301,5 +1309,30 @@
   color: #333;
 }
 </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
+<script>
+window.addEventListener("load", function(){
+  window.cookieconsent.initialise({
+    "palette": {
+      "popup": {
+        "background": "#000"
+      },
+      "button": {
+        "background": "#f1d600"
+      }
+    },
+    "theme": "classic",
+    "content": {
+      "message": "Acest site folosește cookie-uri pentru a-ți oferi o experiență mai bună.",
+      "dismiss": "Am înțeles",
+      "link": "https://politicadecookie.ro",
+      "href": "https://politicadecookie.ro"
+    }
+  })
+});
+</script>
+
 </body>
 </html>
