@@ -1290,6 +1290,40 @@
         renderPayPalButton();
       }
     }
+    function simpleSearch() {
+  const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+  const productCards = document.querySelectorAll('.product-card');
+
+  productCards.forEach(card => {
+    const name = (card.dataset.productName || "").toLowerCase();
+    card.style.display = name.includes(searchTerm) ? 'flex' : 'none';
+  });
+
+  // Ascunde secțiunile goale
+  document.querySelectorAll('.section').forEach(section => {
+    const visible = Array.from(section.querySelectorAll('.product-card')).some(c => c.style.display === 'flex');
+    section.style.display = visible ? 'block' : 'none';
+  });
+
+  // Afișează / ascunde mesajul de "nu există rezultate"
+  const anyVisible = Array.from(document.querySelectorAll('.product-card')).some(c => c.style.display === 'flex');
+  let msg = document.querySelector('.no-products');
+
+  if (!anyVisible) {
+    if (!msg) {
+      msg = document.createElement('div');
+      msg.className = 'no-products';
+      msg.innerHTML = `
+        <i class="fas fa-search" style="font-size: 2rem; margin-bottom: 15px;"></i>
+        <h3>Nu a fost găsit niciun produs</h3>
+        <p>Încearcă să modifici termenii de căutare.</p>
+      `;
+      document.getElementById('productCategories').appendChild(msg);
+    }
+  } else if (msg) {
+    msg.remove();
+  }
+}
   </script>
   <!-- Adaugă asta chiar înainte de </body> -->
 <div class="contact-box">
