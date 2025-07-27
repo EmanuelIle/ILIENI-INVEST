@@ -978,62 +978,52 @@
         refreshPayPalButton();
       }
     }
-   // Search and Filter functions
-    function searchProducts() {
-      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-      const categoryFilter = document.getElementById('categoryFilter').value;
-      
-      // Get all product cards
-      const productCards = document.querySelectorAll('.product-card');
-      
-      productCards.forEach(card => {
-        const productName = card.dataset.productName;
-        const productCategory = card.dataset.category;
-        
-        // Improved search functionality - matches partial word input
-        const matchesSearch = productName.includes(searchTerm);
-        
-        // Category filter check
-        const matchesCategory = categoryFilter === 'all' || productCategory === categoryFilter;
-        
-        // Show/hide based on filters
-        if (matchesSearch && matchesCategory) {
-          card.style.display = 'flex';
-        } else {
-          card.style.display = 'none';
-        }
-      });
-      // Check if any products are visible in each section and hide sections without visible products
-      document.querySelectorAll('.section').forEach(section => {
-        const visibleProducts = section.querySelectorAll('.product-card[style="display: flex"]').length;
-        section.style.display = visibleProducts > 0 ? 'block' : 'none';
-      });
-      
-      // Show message if no products match
-      const anyVisible = document.querySelectorAll('.product-card[style="display: flex"]').length > 0;
-      
-      if (!anyVisible) {
-        // Check if "no products" message already exists
-        let noProductsMsg = document.querySelector('.no-products');
-        
-        if (!noProductsMsg) {
-          noProductsMsg = document.createElement('div');
-          noProductsMsg.className = 'no-products';
-          noProductsMsg.innerHTML = `
-            <i class="fas fa-search" style="font-size: 2rem; margin-bottom: 15px;"></i>
-            <h3>Nu a fost găsit niciun produs</h3>
-            <p>Încearcă să modifici termenii de căutare sau filtrele aplicate.</p>
-          `;
-          document.getElementById('productCategories').appendChild(noProductsMsg);
-        }
-      } else {
-        // Remove "no products" message if it exists
-        const noProductsMsg = document.querySelector('.no-products');
-        if (noProductsMsg) {
-          noProductsMsg.remove();
-        }
-      }
+  function searchProducts() {
+  const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+  const categoryFilter = document.getElementById('categoryFilter').value;
+  
+  let anyVisible = false;
+  
+  document.querySelectorAll('.product-card').forEach(card => {
+    const productName = card.dataset.productName;
+    const productCategory = card.dataset.category;
+    
+    // Verifică dacă produsul se potrivește cu căutarea și filtrul de categorie
+    const matchesSearch = searchTerm === '' || productName.includes(searchTerm);
+    const matchesCategory = categoryFilter === 'all' || productCategory === categoryFilter;
+    
+    if (matchesSearch && matchesCategory) {
+      card.style.display = 'flex';
+      anyVisible = true;
+    } else {
+      card.style.display = 'none';
     }
+  });
+  
+  // Afișează/ascunde mesajul "Niciun produs găsit"
+  const noProductsMsg = document.querySelector('.no-products');
+  if (!anyVisible) {
+    if (!noProductsMsg) {
+      const msg = document.createElement('div');
+      msg.className = 'no-products';
+      msg.innerHTML = `
+        <i class="fas fa-search" style="font-size: 2rem; margin-bottom: 15px;"></i>
+        <h3>Nu a fost găsit niciun produs</h3>
+        <p>Încearcă să modifici termenii de căutare sau filtrele aplicate.</p>
+      `;
+      document.getElementById('productCategories').appendChild(msg);
+    }
+  } else if (noProductsMsg) {
+    noProductsMsg.remove();
+  }
+  
+  // Ascunde secțiunile goale
+  document.querySelectorAll('.section').forEach(section => {
+    const hasVisibleProducts = Array.from(section.querySelectorAll('.product-card'))
+      .some(card => card.style.display === 'flex');
+    section.style.display = hasVisibleProducts ? 'block' : 'none';
+  });
+}
 
     function filterByCategory(category = null) {
       if (!category) {
