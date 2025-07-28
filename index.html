@@ -1097,14 +1097,14 @@
       document.getElementById('confirmationOverlay').style.display = 'none';
     }
 
-    function proceedToCheckout() {
-  if (cart.length === 0) return;
-  
-  // Show delivery form modal
+   function proceedToCheckout() {
+  if (cart.length === 0) {
+    showNotification("Coșul este gol!", "error");
+    return;
+  }
   document.getElementById('deliveryModal').style.display = 'flex';
   document.getElementById('confirmationOverlay').style.display = 'none';
 }
-
 function closeDeliveryModal() {
   document.getElementById('deliveryModal').style.display = 'none';
 }
@@ -1430,5 +1430,47 @@ window.addEventListener("load", function(){
     <a href="termeni-si-conditii.html" target="_blank" style="color: #fff;">Termeni și condiții</a>
   </p>
 </footer>
+    <!-- Adaugă acest script chiar înainte de închiderea </body> -->
+  <script>
+    // Mută acest cod la sfârșitul fișierului JS, după toate funcțiile existente
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('deliveryForm');
+      if (form) {
+        form.addEventListener('submit', async function(e) {
+          e.preventDefault();
+          
+          try {
+            const orderData = {
+              nume: document.getElementById('deliveryName').value,
+              email: document.getElementById('deliveryEmail').value,
+              telefon: document.getElementById('deliveryPhone').value,
+              adresa: {
+                strada: document.getElementById('deliveryAddress').value,
+                oras: document.getElementById('deliveryCity').value,
+                tara: document.getElementById('deliveryCountry').value
+              },
+              produse: cart,
+              total: calculateCartTotal(),
+              data: new Date().toISOString(),
+              status: "nouă"
+            };
+
+            console.log("Trimit comanda:", orderData); // Debug
+            await window.saveOrderToFirebase(orderData);
+            
+            showNotification("Comanda a fost trimisă cu succes!", "success");
+            clearCart();
+            closeDeliveryModal();
+            toggleCart();
+          } catch (error) {
+            console.error("Eroare la trimitere:", error);
+            showNotification(`Eroare: ${error.message}`, "error");
+          }
+        });
+      } else {
+        console.error("Formularul nu a fost găsit în DOM!");
+      }
+    });
+  </script>
 </body>
 </html>
