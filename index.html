@@ -1097,42 +1097,51 @@
       document.getElementById('confirmationOverlay').style.display = 'none';
     }
 
-    async function proceedToCheckout() {
-      if (cart.length === 0) return;
-      
-      try {
-        // Get customer information
-        const email = prompt("Introdu emailul tău:");
-        const telefon = prompt("Introdu numărul de telefon:");
-        
-        if (!email || !telefon) {
-          showNotification("Te rugăm să completezi toate informațiile pentru a continua.", "error");
-          return;
-        }
-        
-        const orderData = {
-          email,
-          telefon,
-          produse: cart,
-          total: calculateCartTotal(),
-          data: new Date().toISOString()
-        };
-        
-        // Save to Firebase
-        await window.saveOrderToFirebase(orderData);
-        
-        showNotification("Comanda a fost trimisă cu succes! Te vom contacta în curând.", "success");
-        
-        // Clear cart after successful order
-        clearCart();
-        closeConfirmation();
-        toggleCart(); // Hide cart
-      } catch (error) {
-        console.error("Error processing checkout:", error);
-        showNotification("A apărut o eroare la trimiterea comenzii. Te rugăm să încerci din nou.", "error");
-      }
-    }
+    function proceedToCheckout() {
+  if (cart.length === 0) return;
+  
+  // Show delivery form modal
+  document.getElementById('deliveryModal').style.display = 'flex';
+  document.getElementById('confirmationOverlay').style.display = 'none';
+}
 
+function closeDeliveryModal() {
+  document.getElementById('deliveryModal').style.display = 'none';
+}
+
+// Adaugă acest cod după funcția proceedToCheckout()
+document.getElementById('deliveryForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  
+  try {
+    const orderData = {
+      nume: document.getElementById('deliveryName').value,
+      email: document.getElementById('deliveryEmail').value,
+      telefon: document.getElementById('deliveryPhone').value,
+      adresa: {
+        strada: document.getElementById('deliveryAddress').value,
+        oras: document.getElementById('deliveryCity').value,
+        tara: document.getElementById('deliveryCountry').value
+      },
+      produse: cart,
+      total: calculateCartTotal(),
+      data: new Date().toISOString()
+    };
+    
+    // Save to Firebase
+    await window.saveOrderToFirebase(orderData);
+    
+    showNotification("Comanda a fost trimisă cu succes! Te vom contacta în curând.", "success");
+    
+    // Clear cart after successful order
+    clearCart();
+    closeDeliveryModal();
+    toggleCart(); // Hide cart
+  } catch (error) {
+    console.error("Error processing checkout:", error);
+    showNotification("A apărut o eroare la trimiterea comenzii. Te rugăm să încerci din nou.", "error");
+  }
+});
     // Notification functions
     function showNotification(message, type = "info") {
       const notificationContainer = document.getElementById('notificationContainer');
@@ -1376,6 +1385,42 @@ window.addEventListener("load", function(){
   })
 });
 </script>
+  <!-- Delivery Form Modal -->
+<div id="deliveryModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center;">
+  <div style="background-color: rgba(0,0,0,0.9); padding: 20px; border-radius: 10px; width: 90%; max-width: 500px;">
+    <h2 style="text-align: center; margin-bottom: 20px;">Date de livrare</h2>
+    <form id="deliveryForm">
+      <div style="margin-bottom: 15px;">
+        <label style="display: block; margin-bottom: 5px;">Nume complet</label>
+        <input type="text" id="deliveryName" required style="width: 100%; padding: 10px; border-radius: 5px; border: none;">
+      </div>
+      <div style="margin-bottom: 15px;">
+        <label style="display: block; margin-bottom: 5px;">Email</label>
+        <input type="email" id="deliveryEmail" required style="width: 100%; padding: 10px; border-radius: 5px; border: none;">
+      </div>
+      <div style="margin-bottom: 15px;">
+        <label style="display: block; margin-bottom: 5px;">Telefon</label>
+        <input type="tel" id="deliveryPhone" required style="width: 100%; padding: 10px; border-radius: 5px; border: none;">
+      </div>
+      <div style="margin-bottom: 15px;">
+        <label style="display: block; margin-bottom: 5px;">Adresă (Stradă, Nr.)</label>
+        <input type="text" id="deliveryAddress" required style="width: 100%; padding: 10px; border-radius: 5px; border: none;">
+      </div>
+      <div style="margin-bottom: 15px;">
+        <label style="display: block; margin-bottom: 5px;">Oraș</label>
+        <input type="text" id="deliveryCity" required style="width: 100%; padding: 10px; border-radius: 5px; border: none;">
+      </div>
+      <div style="margin-bottom: 20px;">
+        <label style="display: block; margin-bottom: 5px;">Țară</label>
+        <input type="text" id="deliveryCountry" required style="width: 100%; padding: 10px; border-radius: 5px; border: none;">
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <button type="submit" style="flex: 1; padding: 12px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">Trimite comanda</button>
+        <button type="button" onclick="closeDeliveryModal()" style="flex: 1; padding: 12px; background-color: #ff3333; color: white; border: none; border-radius: 5px; cursor: pointer;">Anulează</button>
+      </div>
+    </form>
+  </div>
+</div>
 <footer id="site-footer">
   <p>
     ILENI-INVEST este un magazin online din România, cu produse din categoria ceasuri, gadgeturi, articole sportive și fashion.
