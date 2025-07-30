@@ -6,22 +6,20 @@
             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 <!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
 
-
 <url>
-  <loc>http://www.ilieni-invest.com/</loc>
+  <loc>https://www.ilieni-invest.com/</loc>
   <lastmod>2025-07-28T17:35:18+00:00</lastmod>
   <priority>1.00</priority>
 </url>
 <url>
-  <loc>http://www.ilieni-invest.com/politica-confidentialitate.html</loc>
+  <loc>https://www.ilieni-invest.com/politica-confidentialitate.html</loc>
   <lastmod>2025-07-28T17:35:18+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>http://www.ilieni-invest.com/termeni-si-conditii.html</loc>
+  <loc>https://www.ilieni-invest.com/termeni-si-conditii.html</loc>
   <lastmod>2025-07-28T17:35:18+00:00</lastmod>
   <priority>0.80</priority>
 </url>
-
 
 </urlset>
